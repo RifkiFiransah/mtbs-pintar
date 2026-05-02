@@ -5,15 +5,24 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 // Import Screens
+import { AboutMTBSScreen } from "../screens/AboutMTBSScreen";
 import { BerandaScreen } from "../screens/BerandaScreen";
 import { CatatanScreen } from "../screens/CatatanScreen";
 import { CekKondisiScreen } from "../screens/CekKondisiScreen";
 import { PengingatScreen } from "../screens/PengingatScreen";
 import { ProfilScreen } from "../screens/ProfilScreen";
 import { TandaBahayaScreen } from "../screens/TandaBahayaScreen";
-import TanyaJawabScreen from "../screens/TanyaJawabScreen";
+import { TanyaJawabScreen } from "../screens/TanyaJawabScreen";
 import { TindakanScreen } from "../screens/TindakanScreen";
 import { WelcomeScreen } from "../screens/WelcomeScreen";
+import {
+  KejangScreen,
+  MuntahScreen,
+  PenilaianSAGAScreen,
+  PenurunanKesadaranScreen,
+  SesakNafasScreen,
+  TidakBisaMinumScreen,
+} from "../screens/tanda-bahaya";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -96,7 +105,7 @@ export default function AppNavigator() {
           name="Welcome"
           component={WelcomeScreen}
           options={{
-            animationEnabled: false,
+            headerShown: false,
           }}
         />
 
@@ -105,7 +114,16 @@ export default function AppNavigator() {
           name="MainTabs"
           component={MainTabs}
           options={{
-            animationEnabled: false,
+            headerShown: false,
+          }}
+        />
+
+        {/* About MTBS Screen */}
+        <Stack.Screen
+          name="AboutMTBS"
+          component={AboutMTBSScreen}
+          options={{
+            headerShown: false,
           }}
         />
 
@@ -115,7 +133,6 @@ export default function AppNavigator() {
           component={CekKondisiScreen}
           options={{
             headerShown: false,
-            animationEnabled: true,
           }}
         />
 
@@ -124,7 +141,55 @@ export default function AppNavigator() {
           component={TandaBahayaScreen}
           options={{
             headerShown: false,
-            animationEnabled: true,
+          }}
+        />
+
+        {/* Tanda Bahaya Detail Screens */}
+        <Stack.Screen
+          name="TidakBisaMinum"
+          component={TidakBisaMinumScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="Muntah"
+          component={MuntahScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="Kejang"
+          component={KejangScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="PenurunanKesadaran"
+          component={PenurunanKesadaranScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="SesakNafas"
+          component={SesakNafasScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="PenilaianSAGA"
+          component={PenilaianSAGAScreen}
+          options={{
+            headerShown: false,
           }}
         />
 
@@ -133,7 +198,6 @@ export default function AppNavigator() {
           component={TindakanScreen}
           options={{
             headerShown: false,
-            animationEnabled: true,
           }}
         />
 
@@ -142,7 +206,6 @@ export default function AppNavigator() {
           component={TanyaJawabScreen}
           options={{
             headerShown: false,
-            animationEnabled: true,
           }}
         />
       </Stack.Navigator>

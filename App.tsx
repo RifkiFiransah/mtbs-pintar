@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import "react-native-gesture-handler";
 import { initDB } from "./src/database/db";
 import AppNavigator from "./src/navigation/AppNavigator";
 

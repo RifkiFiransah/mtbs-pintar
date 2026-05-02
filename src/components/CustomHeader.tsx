@@ -28,14 +28,15 @@ export const CustomHeader = ({
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      paddingHorizontal: 16,
-      paddingVertical: 12,
+      marginTop: 40,
+      paddingHorizontal: 30,
+      paddingVertical: 20,
       backgroundColor: "#F5F5F5",
       borderBottomWidth: 1,
       borderBottomColor: "#E0E0E0",
     },
     backButton: {
-      paddingRight: 16,
+      paddingRight: 10,
     },
     titleContainer: {
       flex: 1,
@@ -47,7 +48,7 @@ export const CustomHeader = ({
       color: "#1E3A8A",
     },
     rightActionButton: {
-      paddingLeft: 16,
+      paddingLeft: 20,
     },
   });
 
@@ -55,7 +56,7 @@ export const CustomHeader = ({
     <View style={styles.container}>
       {showBack ? (
         <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-          <MaterialIcons name="arrow-back" size={24} color="#1E88E5" />
+          <MaterialIcons name="arrow-back" size={28} color="#1E88E5" />
         </TouchableOpacity>
       ) : (
         <View style={{ width: 40 }} />
@@ -70,7 +71,7 @@ export const CustomHeader = ({
         >
           <MaterialIcons
             name={rightAction.icon as any}
-            size={24}
+            size={28}
             color="#1E88E5"
           />
         </TouchableOpacity>

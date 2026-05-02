@@ -5,7 +5,7 @@ interface TanyaJawabScreenProps {
   navigation: any;
 }
 
-const TanyaJawabScreen = ({ navigation }: TanyaJawabScreenProps) => {
+export const TanyaJawabScreen = ({ navigation }: TanyaJawabScreenProps) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -118,5 +118,3 @@ const TanyaJawabScreen = ({ navigation }: TanyaJawabScreenProps) => {
     </SafeAreaView>
   );
 };
-
-export default TanyaJawabScreen;

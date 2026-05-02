@@ -1,11 +1,78 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { CustomHeader } from "../components/CustomHeader";
 
 interface TandaBahayaScreenProps {
   navigation: any;
 }
 
+interface WarningSignItem {
+  id: string;
+  title: string;
+  description: string;
+  image: any;
+  screen: string;
+}
+
 export const TandaBahayaScreen = ({ navigation }: TandaBahayaScreenProps) => {
+  const warningSignsData: WarningSignItem[] = [
+    {
+      id: "tidak-bisa-minum",
+      title: "Tidak bisa minum \n atau menyusu",
+      description:
+        "Anak tidak dapat minum atau menyusu dengan normal atau kesulitan menelan.",
+      image: require("../../assets/images/icons/tidak-bisa-minum.png"),
+      screen: "TidakBisaMinum",
+    },
+    {
+      id: "muntah",
+      title: "Muntah terus - menerus",
+      description:
+        "Anak muntah berkali-kali dan tidak dapat menahan makanan atau minuman.",
+      image: require("../../assets/images/icons/muntah.png"),
+      screen: "Muntah",
+    },
+    {
+      id: "kejang",
+      title: "Kejang",
+      description:
+        "Anak mengalami kejang atau gerakan tubuh yang tidak terkontrol.",
+      image: require("../../assets/images/icons/kejang.png"),
+      screen: "Kejang",
+    },
+    {
+      id: "penurunan",
+      title: "Penampilan Anak Berubah / Penurunan Kesadaran",
+      description:
+        "Anak terlihat sakit berat, kesadaran menurun, atau tidak responsif.",
+      image: require("../../assets/images/icons/penurunan.png"),
+      screen: "PenurunanKesadaran",
+    },
+    {
+      id: "sesak",
+      title: "Sesak nafas atau nafas cepat",
+      description:
+        "Anak mengalami kesulitan bernapas, napas cepat, atau terengah-engah.",
+      image: require("../../assets/images/icons/sesak.png"),
+      screen: "SesakNafas",
+    },
+    {
+      id: "saga",
+      title: "Penilaian SAGA",
+      description:
+        "Evaluasi komprehensif untuk menentukan kondisi kesehatan anak secara menyeluruh.",
+      image: require("../../assets/images/icons/saga.png"),
+      screen: "PenilaianSAGA",
+    },
+  ];
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -15,53 +82,91 @@ export const TandaBahayaScreen = ({ navigation }: TandaBahayaScreenProps) => {
       paddingHorizontal: 16,
       paddingVertical: 20,
     },
-    warningCard: {
-      backgroundColor: "#FFF3E0",
+    headerBanner: {
+      backgroundColor: "#2B9FFF",
       borderRadius: 12,
       padding: 16,
-      marginBottom: 12,
-      borderLeftWidth: 4,
-      borderLeftColor: "#F57C00",
+      marginBottom: 16,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
       shadowRadius: 4,
       elevation: 3,
     },
-    warningTitle: {
-      fontSize: 15,
-      fontWeight: "700",
-      color: "#E65100",
-      marginBottom: 8,
+    headerText: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: "#FFFFFF",
+      lineHeight: 20,
     },
-    warningDescription: {
-      fontSize: 13,
-      color: "#666666",
-      lineHeight: 18,
-    },
-    emergencyCard: {
-      backgroundColor: "#FFEBEE",
+    warningCard: {
+      backgroundColor: "#FFFFFF",
       borderRadius: 12,
-      padding: 16,
+      padding: 0,
       marginBottom: 12,
-      borderLeftWidth: 4,
-      borderLeftColor: "#C62828",
+      overflow: "hidden",
+      flexDirection: "row",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+      minHeight: 100,
     },
-    emergencyTitle: {
-      fontSize: 15,
-      fontWeight: "700",
-      color: "#C62828",
-      marginBottom: 8,
+    cardImageContainer: {
+      width: 110,
+      backgroundColor: "#F0F9FF",
+      justifyContent: "center",
+      alignItems: "center",
+      paddingVertical: 12,
     },
-    sectionTitle: {
-      fontSize: 16,
+    cardImage: {
+      width: 90,
+      height: 90,
+      resizeMode: "contain",
+    },
+    cardContent: {
+      flex: 1,
+      justifyContent: "center",
+      paddingRight: 14,
+      paddingVertical: 12,
+      paddingLeft: 12,
+    },
+    cardTitle: {
+      fontSize: 14,
       fontWeight: "700",
       color: "#1E3A8A",
-      marginTop: 16,
-      marginBottom: 12,
-      paddingLeft: 8,
+      marginBottom: 4,
+      lineHeight: 18,
+    },
+    cardDescription: {
+      fontSize: 12,
+      color: "#666666",
+      lineHeight: 16,
     },
   });
+
+  const WarningCard = ({ item }: { item: WarningSignItem }) => {
+    const handlePress = () => {
+      navigation.navigate(item.screen);
+    };
+
+    return (
+      <TouchableOpacity
+        style={styles.warningCard}
+        onPress={handlePress}
+        activeOpacity={0.7}
+      >
+        <View style={styles.cardImageContainer}>
+          <Image source={item.image} style={styles.cardImage} />
+        </View>
+        <View style={styles.cardContent}>
+          <Text style={styles.cardTitle}>{item.title}</Text>
+          <Text style={styles.cardDescription}>{item.description}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -70,68 +175,18 @@ export const TandaBahayaScreen = ({ navigation }: TandaBahayaScreenProps) => {
         showBack
         onBackPress={() => navigation.goBack()}
       />
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <View style={styles.scrollContent}>
-          <Text style={styles.sectionTitle}>Tanda Bahaya Umum</Text>
-
-          <View style={styles.warningCard}>
-            <Text style={styles.warningTitle}>Demam Tinggi</Text>
-            <Text style={styles.warningDescription}>
-              Suhu tubuh sebesar 38.5 derajat Celsius atau demam yang
-              berlangsung lebih dari 3 hari tanpa perbaikan.
+          <View style={styles.headerBanner}>
+            <Text style={styles.headerText}>
+              Segera bawa balita kefasilitasi kesehatan terdekat jika mengalami
+              salah satu tanda bahaya berikut:
             </Text>
           </View>
 
-          <View style={styles.warningCard}>
-            <Text style={styles.warningTitle}>Kesulitan Bernapas</Text>
-            <Text style={styles.warningDescription}>
-              Napas cepat, terengah-engah, atau berbunyi mengi yang baru
-              terjadi.
-            </Text>
-          </View>
-
-          <View style={styles.warningCard}>
-            <Text style={styles.warningTitle}>Dehidrasi</Text>
-            <Text style={styles.warningDescription}>
-              Tidak buang air kecil lebih dari 6 jam, bibir kering, atau mata
-              cekung.
-            </Text>
-          </View>
-
-          <Text style={styles.sectionTitle}>
-            Tanda Bahaya Serius - Segera ke Rumah Sakit!
-          </Text>
-
-          <View style={styles.emergencyCard}>
-            <Text style={styles.emergencyTitle}>
-              Kejang atau Tidak Sadarkan Diri
-            </Text>
-            <Text style={styles.warningDescription}>
-              Segera bawa ke rumah sakit atau hubungi ambulans.
-            </Text>
-          </View>
-
-          <View style={styles.emergencyCard}>
-            <Text style={styles.emergencyTitle}>Perdarahan/Pendarahan</Text>
-            <Text style={styles.warningDescription}>
-              Pendarahan dari mulut, hidung, atau tinja yang berdarah.
-            </Text>
-          </View>
-
-          <View style={styles.emergencyCard}>
-            <Text style={styles.emergencyTitle}>Perut Membengkak</Text>
-            <Text style={styles.warningDescription}>
-              Perut membengkak keras disertai nyeri hebat atau muntah-muntah.
-            </Text>
-          </View>
-
-          <View style={styles.emergencyCard}>
-            <Text style={styles.emergencyTitle}>Syok/Tanda Syok</Text>
-            <Text style={styles.warningDescription}>
-              Ekstremitas dingin, denyut nadi cepat lemah, atau kesadaran
-              menurun.
-            </Text>
-          </View>
+          {warningSignsData.map((item) => (
+            <WarningCard key={item.id} item={item} />
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>
