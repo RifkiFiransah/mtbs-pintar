@@ -1,3 +1,4 @@
+import { Feather } from "@expo/vector-icons";
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { CustomHeader } from "../../components/CustomHeader";
 
@@ -20,6 +21,7 @@ export const SesakNafasScreen = ({ navigation }: SesakNafasScreenProps) => {
       backgroundColor: "#E8F4F8",
       borderRadius: 16,
       marginHorizontal: 8,
+      marginTop: 20,
       marginBottom: 20,
       borderWidth: 2,
       borderColor: "#4A3728",
@@ -178,7 +180,23 @@ export const SesakNafasScreen = ({ navigation }: SesakNafasScreenProps) => {
               </View>
 
               <View style={styles.warningBox}>
-                <Text style={styles.warningTitle}>⚠️ Apa Berbahaya?</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 4,
+                  }}
+                >
+                  <Feather name="alert-triangle" size={14} color="#FF6B35" />
+                  <Text
+                    style={[
+                      styles.warningTitle,
+                      { marginBottom: 0, marginLeft: 6 },
+                    ]}
+                  >
+                    Apa Berbahaya?
+                  </Text>
+                </View>
                 <Text style={styles.warningText}>
                   Sesak nafas atau nafas cepat dapat menunjukkan infeksi
                   pneumonia atau gangguan pernapasan lainnya yang memerlukan
@@ -218,9 +236,23 @@ export const SesakNafasScreen = ({ navigation }: SesakNafasScreenProps) => {
               </View>
 
               <View style={styles.cautionBox}>
-                <Text style={styles.cautionTitle}>
-                  🔍 Tanda Anak Memerlukan Bantuan
-                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 4,
+                  }}
+                >
+                  <Feather name="search" size={14} color="#FF9800" />
+                  <Text
+                    style={[
+                      styles.cautionTitle,
+                      { marginBottom: 0, marginLeft: 6 },
+                    ]}
+                  >
+                    Tanda Anak Memerlukan Bantuan
+                  </Text>
+                </View>
                 <View style={styles.bulletPoint}>
                   <Text style={styles.bullet}>•</Text>
                   <Text style={styles.bulletText}>
@@ -250,7 +282,31 @@ export const SesakNafasScreen = ({ navigation }: SesakNafasScreenProps) => {
 
             {/* Tindakan */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>✅ Tindakan Segera</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 12,
+                  paddingBottom: 8,
+                  borderBottomWidth: 2,
+                  borderBottomColor: "#2B9FFF",
+                }}
+              >
+                <Feather name="check-circle" size={18} color="#1E3A8A" />
+                <Text
+                  style={[
+                    styles.sectionTitle,
+                    {
+                      marginBottom: 0,
+                      paddingBottom: 0,
+                      borderBottomWidth: 0,
+                      marginLeft: 8,
+                    },
+                  ]}
+                >
+                  Tindakan Segera
+                </Text>
+              </View>
               <View style={styles.bulletPoint}>
                 <Text style={styles.bullet}>•</Text>
                 <Text style={styles.bulletText}>

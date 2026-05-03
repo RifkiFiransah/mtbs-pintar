@@ -1,3 +1,4 @@
+import { Feather } from "@expo/vector-icons";
 import {
   Image,
   SafeAreaView,
@@ -25,22 +26,22 @@ export const TidakBisaMinumScreen = ({
     {
       id: "bibir-kering",
       title: "Bibir dan mulut kering",
-      image: require("../../../assets/images/icons/tidak-bisa-minum.png"),
+      image: require("../../../assets/images/illustrations/bibi-kering.png"),
     },
     {
       id: "bak",
       title: "Jarang buang air kecil / BAK",
-      image: require("../../../assets/images/icons/muntah.png"),
+      image: require("../../../assets/images/illustrations/nahan-buang.png"),
     },
     {
       id: "mata-cekung",
       title: "Mata cekung",
-      image: require("../../../assets/images/icons/kejang.png"),
+      image: require("../../../assets/images/illustrations/mata-cekung.png"),
     },
     {
       id: "anak-lemas",
       title: "Anak tampak sangat lemas",
-      image: require("../../../assets/images/icons/penurunan.png"),
+      image: require("../../../assets/images/illustrations/anak-lemas.png"),
     },
   ];
 
@@ -99,8 +100,8 @@ export const TidakBisaMinumScreen = ({
     },
     warningBox: {
       backgroundColor: "#E3F2FD",
-      borderLeftWidth: 4,
-      borderLeftColor: "#FF6B35",
+      // borderLeftWidth: 4,
+      // borderLeftColor: "#FF6B35",
       borderRadius: 8,
       padding: 12,
       marginTop: 12,
@@ -118,8 +119,8 @@ export const TidakBisaMinumScreen = ({
     },
     cautionBox: {
       backgroundColor: "#FFF3E0",
-      borderLeftWidth: 4,
-      borderLeftColor: "#FF9800",
+      // borderLeftWidth: 4,
+      // borderLeftColor: "#FF9800",
       borderRadius: 8,
       padding: 12,
       marginTop: 12,
@@ -137,8 +138,8 @@ export const TidakBisaMinumScreen = ({
     },
     actionBox: {
       backgroundColor: "#E8F5E9",
-      borderLeftWidth: 4,
-      borderLeftColor: "#4CAF50",
+      // borderLeftWidth: 4,
+      // borderLeftColor: "#4CAF50",
       borderRadius: 8,
       padding: 12,
       marginTop: 12,
@@ -196,9 +197,9 @@ export const TidakBisaMinumScreen = ({
       alignItems: "center",
     },
     signImage: {
-      width: 90,
+      width: 120,
       height: 90,
-      borderRadius: 8,
+      borderRadius: 5,
       marginRight: 12,
       resizeMode: "cover",
       backgroundColor: "#F0F9FF",
@@ -217,6 +218,7 @@ export const TidakBisaMinumScreen = ({
       backgroundColor: "#E8F4F8",
       borderRadius: 16,
       marginHorizontal: 8,
+      marginTop: 20,
       marginBottom: 20,
       borderWidth: 2,
       borderColor: "#4A3728",
@@ -258,32 +260,26 @@ export const TidakBisaMinumScreen = ({
               <Text style={styles.sectionTitle}>Definisi</Text>
               <Text style={styles.descriptionText}>
                 Balita tidak mau minum, menyusu, atau sangat sulit diberi cairan
-                meskipun tidak ada yang masuk ke dalam tubuh.
+                meskipun sudah dicoba.
               </Text>
-            </View>
-
-            {/* Cara Menilai */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>
-                Cara Menilai &quot;Tidak Sadar&quot;
-              </Text>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>Tidak membuka mata</Text>
-              </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>Tidak bergerak</Text>
-              </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>
-                  Tidak merespon suara atau sentuhan
-                </Text>
-              </View>
-
               <View style={styles.warningBox}>
-                <Text style={styles.warningTitle}>⚠️ Apa Berbahaya?</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 4,
+                  }}
+                >
+                  <Feather name="alert-triangle" size={14} color="#FF6B35" />
+                  <Text
+                    style={[
+                      styles.warningTitle,
+                      { marginBottom: 0, marginLeft: 6 },
+                    ]}
+                  >
+                    Apa Berbahaya?
+                  </Text>
+                </View>
                 <Text style={styles.warningText}>
                   Kondisi ini dapat menyebabkan dehidrasi dan menandakan anak
                   sedang sakit serius.
@@ -312,10 +308,24 @@ export const TidakBisaMinumScreen = ({
                 </View>
               ))}
 
-              <View style={styles.cautionBox}>
-                <Text style={styles.cautionTitle}>
-                  🔍 Tanda Anak Mulai Dehidrasi Lanjutan
-                </Text>
+              {/* <View style={styles.cautionBox}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 4,
+                  }}
+                >
+                  <Feather name="search" size={14} color="#FF9800" />
+                  <Text
+                    style={[
+                      styles.cautionTitle,
+                      { marginBottom: 0, marginLeft: 6 },
+                    ]}
+                  >
+                    Tanda Anak Mulai Dehidrasi Lanjutan
+                  </Text>
+                </View>
                 <View style={styles.bulletPoint}>
                   <Text style={styles.bullet}>•</Text>
                   <Text style={styles.bulletText}>Bibir dan mulut kering</Text>
@@ -334,12 +344,36 @@ export const TidakBisaMinumScreen = ({
                     Anak tampak sangat lemas
                   </Text>
                 </View>
-              </View>
+              </View> */}
             </View>
 
             {/* Perhatian */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>⚠️ Perhatian</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 12,
+                  paddingBottom: 8,
+                  borderBottomWidth: 2,
+                  borderBottomColor: "#2B9FFF",
+                }}
+              >
+                <Feather name="alert-triangle" size={18} color="#1E3A8A" />
+                <Text
+                  style={[
+                    styles.sectionTitle,
+                    {
+                      marginBottom: 0,
+                      paddingBottom: 0,
+                      borderBottomWidth: 0,
+                      marginLeft: 8,
+                    },
+                  ]}
+                >
+                  Tanda yang perlu diperhatikan
+                </Text>
+              </View>
               <View style={styles.bulletPoint}>
                 <Text style={styles.bullet}>•</Text>
                 <Text style={styles.bulletText}>Melolok minum atau ASI</Text>
@@ -359,8 +393,24 @@ export const TidakBisaMinumScreen = ({
                 </Text>
               </View>
 
-              <View style={styles.actionBox}>
-                <Text style={styles.actionTitle}>✅ Tindakan</Text>
+              {/* <View style={styles.actionBox}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 4,
+                  }}
+                >
+                  <Feather name="check-circle" size={14} color="#4CAF50" />
+                  <Text
+                    style={[
+                      styles.actionTitle,
+                      { marginBottom: 0, marginLeft: 6 },
+                    ]}
+                  >
+                    Tindakan
+                  </Text>
+                </View>
                 <View style={styles.bulletPoint}>
                   <Text style={styles.bullet}>•</Text>
                   <Text style={styles.bulletText}>
@@ -373,7 +423,7 @@ export const TidakBisaMinumScreen = ({
                     Jika terus menolak, segera bawa ke fasilitas kesehatan
                   </Text>
                 </View>
-              </View>
+              </View> */}
             </View>
           </View>
           <View style={styles.cardBottomLine} />

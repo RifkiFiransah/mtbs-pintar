@@ -1,3 +1,4 @@
+import { Feather } from "@expo/vector-icons";
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { CustomHeader } from "../../components/CustomHeader";
 
@@ -20,6 +21,7 @@ export const MuntahScreen = ({ navigation }: MuntahScreenProps) => {
       backgroundColor: "#E8F4F8",
       borderRadius: 16,
       marginHorizontal: 8,
+      marginTop: 20,
       marginBottom: 20,
       borderWidth: 2,
       borderColor: "#4A3728",
@@ -158,28 +160,25 @@ export const MuntahScreen = ({ navigation }: MuntahScreenProps) => {
                 Balita memuntahkan semua makanan dan minuman yang diberikan,
                 sehingga tidak ada yang masuk ke dalam tubuh.
               </Text>
-            </View>
-
-            {/* Cara Menilai */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>
-                Cara Menilai Muntah Terus-Menerus
-              </Text>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>
-                  Balita memuntahkan semua makanan dan minuman yang diberikan
-                </Text>
-              </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>
-                  Sehingga tidak ada yang masuk ke dalam tubuh
-                </Text>
-              </View>
 
               <View style={styles.warningBox}>
-                <Text style={styles.warningTitle}>⚠️ Apa Berbahaya?</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 4,
+                  }}
+                >
+                  <Feather name="alert-triangle" size={14} color="#FF6B35" />
+                  <Text
+                    style={[
+                      styles.warningTitle,
+                      { marginBottom: 0, marginLeft: 6 },
+                    ]}
+                  >
+                    Apa Berbahaya?
+                  </Text>
+                </View>
                 <Text style={styles.warningText}>
                   Kondisi ini dapat menyebabkan dehidrasi dan kekurangan
                   nutrisi, serta bisa menjadi tanda penyakit serius.
@@ -187,11 +186,9 @@ export const MuntahScreen = ({ navigation }: MuntahScreenProps) => {
               </View>
             </View>
 
-            {/* Tanda Anak Mulai Dehidrasi */}
+            {/* Tanda Anak Mulai Muntah */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>
-                Tanda Anak Mulai Dehidrasi
-              </Text>
+              <Text style={styles.sectionTitle}>Tanda Anak Mulai Muntah</Text>
               <View style={styles.bulletPoint}>
                 <Text style={styles.bullet}>•</Text>
                 <Text style={styles.bulletText}>Bibir dan mulut kering</Text>
@@ -235,35 +232,35 @@ export const MuntahScreen = ({ navigation }: MuntahScreenProps) => {
                   Tidak mau makan atau minum
                 </Text>
               </View>
-
-              <View style={styles.cautionBox}>
-                <Text style={styles.cautionTitle}>
-                  🔍 Tanda Mulai Dehidrasi
-                </Text>
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={styles.bulletText}>Bibir dan mulut kering</Text>
-                </View>
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={styles.bulletText}>Jarang buang air kecil</Text>
-                </View>
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={styles.bulletText}>Mata cekung</Text>
-                </View>
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={styles.bulletText}>
-                    Anak tampak sangat lemas
-                  </Text>
-                </View>
-              </View>
             </View>
 
             {/* Perhatian */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>⚠️ Perhatian</Text>
+            {/* <View style={styles.section}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 12,
+                  paddingBottom: 8,
+                  borderBottomWidth: 2,
+                  borderBottomColor: "#2B9FFF",
+                }}
+              >
+                <Feather name="alert-triangle" size={18} color="#1E3A8A" />
+                <Text
+                  style={[
+                    styles.sectionTitle,
+                    {
+                      marginBottom: 0,
+                      paddingBottom: 0,
+                      borderBottomWidth: 0,
+                      marginLeft: 8,
+                    },
+                  ]}
+                >
+                  Perhatian
+                </Text>
+              </View>
               <View style={styles.bulletPoint}>
                 <Text style={styles.bullet}>•</Text>
                 <Text style={styles.bulletText}>
@@ -280,7 +277,23 @@ export const MuntahScreen = ({ navigation }: MuntahScreenProps) => {
               </View>
 
               <View style={styles.actionBox}>
-                <Text style={styles.actionTitle}>✅ Penanganan</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 4,
+                  }}
+                >
+                  <Feather name="check-circle" size={14} color="#4CAF50" />
+                  <Text
+                    style={[
+                      styles.actionTitle,
+                      { marginBottom: 0, marginLeft: 6 },
+                    ]}
+                  >
+                    Penanganan
+                  </Text>
+                </View>
                 <View style={styles.bulletPoint}>
                   <Text style={styles.bullet}>•</Text>
                   <Text style={styles.bulletText}>
@@ -300,7 +313,7 @@ export const MuntahScreen = ({ navigation }: MuntahScreenProps) => {
                   </Text>
                 </View>
               </View>
-            </View>
+            </View> */}
           </View>
           <View style={styles.cardBottomLine} />
         </View>
