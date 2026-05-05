@@ -1,3 +1,4 @@
+import { BackgroundWrapper } from "../../components/BackgroundWrapper";
 import { Feather } from "@expo/vector-icons";
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { CustomHeader } from "../../components/CustomHeader";
@@ -8,9 +9,12 @@ interface MuntahScreenProps {
 
 export const MuntahScreen = ({ navigation }: MuntahScreenProps) => {
   const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
       flex: 1,
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "transparent",
     },
     scrollContent: {
       paddingHorizontal: 12,
@@ -143,6 +147,7 @@ export const MuntahScreen = ({ navigation }: MuntahScreenProps) => {
   });
 
   return (
+    <BackgroundWrapper>
     <SafeAreaView style={styles.container}>
       <CustomHeader
         title="Muntah terus - menerus"
@@ -319,5 +324,6 @@ export const MuntahScreen = ({ navigation }: MuntahScreenProps) => {
         </View>
       </ScrollView>
     </SafeAreaView>
+    </BackgroundWrapper>
   );
 };

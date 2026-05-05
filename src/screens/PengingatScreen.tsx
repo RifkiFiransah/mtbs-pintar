@@ -1,3 +1,4 @@
+import { BackgroundWrapper } from "../components/BackgroundWrapper";
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { CustomHeader } from "../components/CustomHeader";
 
@@ -7,9 +8,12 @@ interface PengingatScreenProps {
 
 export const PengingatScreen = ({ navigation }: PengingatScreenProps) => {
   const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
       flex: 1,
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "transparent",
     },
     scrollContent: {
       paddingHorizontal: 16,
@@ -57,6 +61,7 @@ export const PengingatScreen = ({ navigation }: PengingatScreenProps) => {
   });
 
   return (
+    <BackgroundWrapper>
     <SafeAreaView style={styles.container}>
       <CustomHeader title="Pengingat" />
       <ScrollView style={styles.container}>
@@ -70,5 +75,6 @@ export const PengingatScreen = ({ navigation }: PengingatScreenProps) => {
         </View>
       </ScrollView>
     </SafeAreaView>
+    </BackgroundWrapper>
   );
 };

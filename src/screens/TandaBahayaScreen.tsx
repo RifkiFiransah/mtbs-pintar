@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { BackgroundWrapper } from "../components/BackgroundWrapper";
 import { CustomHeader } from "../components/CustomHeader";
 
 interface TandaBahayaScreenProps {
@@ -74,9 +75,13 @@ export const TandaBahayaScreen = ({ navigation }: TandaBahayaScreenProps) => {
   ];
 
   const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
       flex: 1,
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "transparent",
+      marginBottom: 16,
     },
     scrollContent: {
       paddingHorizontal: 16,
@@ -169,26 +174,31 @@ export const TandaBahayaScreen = ({ navigation }: TandaBahayaScreenProps) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <CustomHeader
-        title="Tanda Bahaya Umum"
-        showBack
-        onBackPress={() => navigation.goBack()}
-      />
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <View style={styles.scrollContent}>
-          <View style={styles.headerBanner}>
-            <Text style={styles.headerText}>
-              Segera bawa balita kefasilitasi kesehatan terdekat jika mengalami
-              salah satu tanda bahaya berikut:
-            </Text>
-          </View>
+    <BackgroundWrapper>
+      <SafeAreaView style={styles.safeArea}>
+        <CustomHeader
+          title="Tanda Bahaya Umum"
+          showBack
+          onBackPress={() => navigation.goBack()}
+        />
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.scrollContent}>
+            <View style={styles.headerBanner}>
+              <Text style={styles.headerText}>
+                Segera bawa balita kefasilitasi kesehatan terdekat jika
+                mengalami salah satu tanda bahaya berikut:
+              </Text>
+            </View>
 
-          {warningSignsData.map((item) => (
-            <WarningCard key={item.id} item={item} />
-          ))}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+            {warningSignsData.map((item) => (
+              <WarningCard key={item.id} item={item} />
+            ))}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </BackgroundWrapper>
   );
 };

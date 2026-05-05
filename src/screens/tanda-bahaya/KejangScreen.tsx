@@ -7,6 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { BackgroundWrapper } from "../../components/BackgroundWrapper";
 import { CustomHeader } from "../../components/CustomHeader";
 
 interface KejangScreenProps {
@@ -49,9 +50,12 @@ export const KejangScreen = ({ navigation }: KejangScreenProps) => {
   ];
 
   const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
       flex: 1,
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "transparent",
     },
     scrollContent: {
       paddingHorizontal: 12,
@@ -239,147 +243,154 @@ export const KejangScreen = ({ navigation }: KejangScreenProps) => {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
-      <CustomHeader
-        title="Kejang"
-        showBack
-        onBackPress={() => navigation.goBack()}
-      />
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <View style={styles.mainCard}>
-          <View style={styles.cardTopLine} />
-          <View style={styles.cardContent}>
-            {/* Definisi */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Definisi</Text>
-              <Text style={styles.descriptionText}>
-                Kejang adalah kondisi saat tubuh anak bergerak tiba-tiba tak
-                terkendali (kaki atau kejut-kejut), bisa disertai mata melolot
-                atau tidak sadar.
-              </Text>
+    <BackgroundWrapper>
+      <SafeAreaView style={styles.container}>
+        <CustomHeader
+          title="Kejang"
+          showBack
+          onBackPress={() => navigation.goBack()}
+        />
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.mainCard}>
+            <View style={styles.cardTopLine} />
+            <View style={styles.cardContent}>
+              {/* Definisi */}
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Definisi</Text>
+                <Text style={styles.descriptionText}>
+                  Kejang adalah kondisi saat tubuh anak bergerak tiba-tiba tak
+                  terkendali (kaki atau kejut-kejut), bisa disertai mata melolot
+                  atau tidak sadar.
+                </Text>
 
-              <View style={styles.warningBox}>
+                <View style={styles.warningBox}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: 4,
+                    }}
+                  >
+                    <Feather name="alert-triangle" size={14} color="#FF6B35" />
+                    <Text
+                      style={[
+                        styles.warningTitle,
+                        { marginBottom: 0, marginLeft: 6 },
+                      ]}
+                    >
+                      Apa Berbahaya?
+                    </Text>
+                  </View>
+                  <Text style={styles.warningText}>
+                    Kejang bisa menjadi tanda penyakit serius seperti infeksi
+                    berat atau gangguan pada otak.
+                  </Text>
+                </View>
+              </View>
+
+              {/* Tanda yang Perlu Diperhatikan */}
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>
+                  Tanda yang Perlu Diperhatikan
+                </Text>
+                <View style={styles.cautionBox}>
+                  <View style={styles.bulletPoint}>
+                    <Text style={styles.bullet}>•</Text>
+                    <Text style={styles.bulletText}>
+                      Tangan dan kaki bergerak kejut-kejut tanpa kendali
+                    </Text>
+                  </View>
+                  <View style={styles.bulletPoint}>
+                    <Text style={styles.bullet}>•</Text>
+                    <Text style={styles.bulletText}>
+                      Tubuh kaku atau kejut-kejut hebat
+                    </Text>
+                  </View>
+                  <View style={styles.bulletPoint}>
+                    <Text style={styles.bullet}>•</Text>
+                    <Text style={styles.bulletText}>
+                      Mata Melotot atau Mendelik
+                    </Text>
+                  </View>
+                  <View style={styles.bulletPoint}>
+                    <Text style={styles.bullet}>•</Text>
+                    <Text style={styles.bulletText}>Bisa disertai demam</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Tanda yang Perlu Diperhatikan */}
+              <View style={styles.section}>
+                <View style={styles.kejangHeader}>
+                  <Text style={styles.kejangTitle}>
+                    TANDA ANAK MULAI Kejang
+                  </Text>
+                  <View style={styles.contohIlustrasiBadge}>
+                    <View style={styles.redDot} />
+                    <Text style={styles.contohText}>Contoh Ilustrasi.</Text>
+                  </View>
+                </View>
+
+                {kejangSigns.map((sign) => (
+                  <View key={sign.id} style={styles.signCard}>
+                    <Image source={sign.image} style={styles.signImage} />
+                    <View style={styles.signContent}>
+                      <Text style={styles.signTitle}>{sign.title}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+
+              {/* Perhatian */}
+              <View style={styles.section}>
                 <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    marginBottom: 4,
+                    marginBottom: 12,
+                    paddingBottom: 8,
+                    borderBottomWidth: 2,
+                    borderBottomColor: "#2B9FFF",
                   }}
                 >
-                  <Feather name="alert-triangle" size={14} color="#FF6B35" />
+                  <Feather name="check-circle" size={18} color="#1E3A8A" />
                   <Text
                     style={[
-                      styles.warningTitle,
-                      { marginBottom: 0, marginLeft: 6 },
+                      styles.sectionTitle,
+                      {
+                        marginBottom: 0,
+                        paddingBottom: 0,
+                        borderBottomWidth: 0,
+                        marginLeft: 8,
+                      },
                     ]}
                   >
-                    Apa Berbahaya?
+                    Penanganan
                   </Text>
                 </View>
-                <Text style={styles.warningText}>
-                  Kejang bisa menjadi tanda penyakit serius seperti infeksi
-                  berat atau gangguan pada otak.
-                </Text>
-              </View>
-            </View>
-
-            {/* Tanda yang Perlu Diperhatikan */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>
-                Tanda yang Perlu Diperhatikan
-              </Text>
-              <View style={styles.cautionBox}>
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={styles.bulletText}>
-                    Tangan dan kaki bergerak kejut-kejut tanpa kendali
-                  </Text>
-                </View>
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={styles.bulletText}>
-                    Tubuh kaku atau kejut-kejut hebat
-                  </Text>
-                </View>
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={styles.bulletText}>
-                    Mata Melotot atau Mendelik
-                  </Text>
-                </View>
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={styles.bulletText}>Bisa disertai demam</Text>
-                </View>
-              </View>
-            </View>
-
-            {/* Tanda yang Perlu Diperhatikan */}
-            <View style={styles.section}>
-              <View style={styles.kejangHeader}>
-                <Text style={styles.kejangTitle}>TANDA ANAK MULAI Kejang</Text>
-                <View style={styles.contohIlustrasiBadge}>
-                  <View style={styles.redDot} />
-                  <Text style={styles.contohText}>Contoh Ilustrasi.</Text>
-                </View>
-              </View>
-
-              {kejangSigns.map((sign) => (
-                <View key={sign.id} style={styles.signCard}>
-                  <Image source={sign.image} style={styles.signImage} />
-                  <View style={styles.signContent}>
-                    <Text style={styles.signTitle}>{sign.title}</Text>
+                <View style={styles.actionBox}>
+                  <View style={styles.bulletPoint}>
+                    <Text style={styles.bullet}>•</Text>
+                    <Text style={styles.bulletText}>
+                      Kejang biasanya berlangsung beberapa detik-menit
+                    </Text>
+                  </View>
+                  <View style={styles.bulletPoint}>
+                    <Text style={styles.bullet}>•</Text>
+                    <Text style={styles.bulletText}>
+                      Anak bisa tampak lemas atau mengantuk setelah kejang
+                    </Text>
                   </View>
                 </View>
-              ))}
-            </View>
-
-            {/* Perhatian */}
-            <View style={styles.section}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 12,
-                  paddingBottom: 8,
-                  borderBottomWidth: 2,
-                  borderBottomColor: "#2B9FFF",
-                }}
-              >
-                <Feather name="check-circle" size={18} color="#1E3A8A" />
-                <Text
-                  style={[
-                    styles.sectionTitle,
-                    {
-                      marginBottom: 0,
-                      paddingBottom: 0,
-                      borderBottomWidth: 0,
-                      marginLeft: 8,
-                    },
-                  ]}
-                >
-                  Penanganan
-                </Text>
-              </View>
-              <View style={styles.actionBox}>
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={styles.bulletText}>
-                    Kejang biasanya berlangsung beberapa detik-menit
-                  </Text>
-                </View>
-                <View style={styles.bulletPoint}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={styles.bulletText}>
-                    Anak bisa tampak lemas atau mengantuk setelah kejang
-                  </Text>
-                </View>
               </View>
             </View>
+            <View style={styles.cardBottomLine} />
           </View>
-          <View style={styles.cardBottomLine} />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </BackgroundWrapper>
   );
 };

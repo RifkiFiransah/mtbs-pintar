@@ -1,3 +1,4 @@
+import { BackgroundWrapper } from "../../components/BackgroundWrapper";
 import { Feather } from "@expo/vector-icons";
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { CustomHeader } from "../../components/CustomHeader";
@@ -8,9 +9,12 @@ interface SesakNafasScreenProps {
 
 export const SesakNafasScreen = ({ navigation }: SesakNafasScreenProps) => {
   const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
       flex: 1,
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "transparent",
     },
     scrollContent: {
       paddingHorizontal: 12,
@@ -138,6 +142,7 @@ export const SesakNafasScreen = ({ navigation }: SesakNafasScreenProps) => {
   });
 
   return (
+    <BackgroundWrapper>
     <SafeAreaView style={styles.container}>
       <CustomHeader
         title="Sesak nafas atau nafas cepat"
@@ -325,5 +330,6 @@ export const SesakNafasScreen = ({ navigation }: SesakNafasScreenProps) => {
         </View>
       </ScrollView>
     </SafeAreaView>
+    </BackgroundWrapper>
   );
 };

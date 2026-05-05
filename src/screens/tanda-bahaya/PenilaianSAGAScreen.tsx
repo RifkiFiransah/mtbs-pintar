@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { BackgroundWrapper } from "../../components/BackgroundWrapper";
 import { CustomHeader } from "../../components/CustomHeader";
 
 interface PenilaianSAGAScreenProps {
@@ -101,169 +102,174 @@ export const PenilaianSAGAScreen = ({
   const currentCard = sagaCards[currentIndex];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <CustomHeader
-        title="Penilaian SAGA"
-        showBack
-        onBackPress={() => navigation.goBack()}
-      />
+    <BackgroundWrapper>
+      <SafeAreaView style={styles.container}>
+        <CustomHeader
+          title="Penilaian SAGA"
+          showBack
+          onBackPress={() => navigation.goBack()}
+        />
 
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        scrollEnabled={scrollEnabled}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Main Card Container */}
-        <View style={styles.cardContainer}>
-          <View
-            style={[
-              styles.mainCard,
-              { backgroundColor: currentCard.lightColor },
-            ]}
-          >
-            {/* Header Section */}
-            <View style={styles.headerSection}>
-              <View
-                style={[
-                  styles.iconCircle,
-                  { backgroundColor: currentCard.color },
-                ]}
-              >
-                <Feather name={currentCard.icon} size={48} color="white" />
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          scrollEnabled={scrollEnabled}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Main Card Container */}
+          <View style={styles.cardContainer}>
+            <View
+              style={[
+                styles.mainCard,
+                { backgroundColor: currentCard.lightColor },
+              ]}
+            >
+              {/* Header Section */}
+              <View style={styles.headerSection}>
+                <View
+                  style={[
+                    styles.iconCircle,
+                    { backgroundColor: currentCard.color },
+                  ]}
+                >
+                  <Feather name={currentCard.icon} size={48} color="white" />
+                </View>
               </View>
-            </View>
 
-            {/* Title Section */}
-            <View style={styles.titleSection}>
-              <Text style={[styles.title, { color: currentCard.color }]}>
-                {currentCard.title}
-              </Text>
-              <Text style={styles.subtitle}>{currentCard.subtitle}</Text>
-            </View>
-
-            {/* Content Section */}
-            <View style={styles.contentSection}>
-              <View style={styles.itemsContainer}>
-                {currentCard.items.map((item, index) => (
-                  <View key={index} style={styles.itemRow}>
-                    <Feather
-                      name="check-circle"
-                      size={18}
-                      color={currentCard.color}
-                    />
-                    <Text
-                      style={[styles.itemText, { color: currentCard.color }]}
-                    >
-                      {item}
-                    </Text>
-                  </View>
-                ))}
+              {/* Title Section */}
+              <View style={styles.titleSection}>
+                <Text style={[styles.title, { color: currentCard.color }]}>
+                  {currentCard.title}
+                </Text>
+                <Text style={styles.subtitle}>{currentCard.subtitle}</Text>
               </View>
-            </View>
 
-            {/* Footer Section */}
-            <View style={styles.footerSection}>
-              <Text style={styles.progressText}>
-                {currentIndex + 1} / {sagaCards.length}
-              </Text>
+              {/* Content Section */}
+              <View style={styles.contentSection}>
+                <View style={styles.itemsContainer}>
+                  {currentCard.items.map((item, index) => (
+                    <View key={index} style={styles.itemRow}>
+                      <Feather
+                        name="check-circle"
+                        size={18}
+                        color={currentCard.color}
+                      />
+                      <Text
+                        style={[styles.itemText, { color: currentCard.color }]}
+                      >
+                        {item}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+
+              {/* Footer Section */}
+              <View style={styles.footerSection}>
+                <Text style={styles.progressText}>
+                  {currentIndex + 1} / {sagaCards.length}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        {/* Navigation Buttons */}
-        <View style={styles.navigationContainer}>
-          <TouchableOpacity
-            style={[
-              styles.navButton,
-              currentIndex === 0 && styles.disabledButton,
-            ]}
-            onPress={handlePrev}
-            disabled={currentIndex === 0}
-          >
-            <Feather
-              name="chevron-left"
-              size={24}
-              color={currentIndex === 0 ? "#CCC" : "#333"}
-            />
-            <Text
-              style={[
-                styles.navButtonText,
-                currentIndex === 0 && styles.disabledButtonText,
-              ]}
-            >
-              Sebelumnya
-            </Text>
-          </TouchableOpacity>
+          {/* Dot Indicators */}
+          <View style={styles.dotsContainer}>
+            {sagaCards.map((_, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.dot,
+                  index === currentIndex && styles.activeDot,
+                  {
+                    backgroundColor:
+                      index === currentIndex ? currentCard.color : "#D0D0D0",
+                  },
+                ]}
+                onPress={() => handleDotPress(index)}
+              />
+            ))}
+          </View>
 
-          <TouchableOpacity
-            style={[
-              styles.navButton,
-              currentIndex === sagaCards.length - 1 && styles.disabledButton,
-            ]}
-            onPress={handleNext}
-            disabled={currentIndex === sagaCards.length - 1}
-          >
-            <Text
-              style={[
-                styles.navButtonText,
-                currentIndex === sagaCards.length - 1 &&
-                  styles.disabledButtonText,
-              ]}
-            >
-              Berikutnya
-            </Text>
-            <Feather
-              name="chevron-right"
-              size={24}
-              color={currentIndex === sagaCards.length - 1 ? "#CCC" : "#333"}
-            />
-          </TouchableOpacity>
-        </View>
-
-        {/* Dot Indicators */}
-        <View style={styles.dotsContainer}>
-          {sagaCards.map((_, index) => (
+          {/* Navigation Buttons */}
+          <View style={styles.navigationContainer}>
             <TouchableOpacity
-              key={index}
               style={[
-                styles.dot,
-                index === currentIndex && styles.activeDot,
-                {
-                  backgroundColor:
-                    index === currentIndex ? currentCard.color : "#D0D0D0",
-                },
+                styles.navButton,
+                currentIndex === 0 && styles.disabledButton,
               ]}
-              onPress={() => handleDotPress(index)}
-            />
-          ))}
-        </View>
+              onPress={handlePrev}
+              disabled={currentIndex === 0}
+            >
+              <Feather
+                name="chevron-left"
+                size={24}
+                color={currentIndex === 0 ? "#CCC" : "#333"}
+              />
+              <Text
+                style={[
+                  styles.navButtonText,
+                  currentIndex === 0 && styles.disabledButtonText,
+                ]}
+              >
+                Sebelumnya
+              </Text>
+            </TouchableOpacity>
 
-        {/* Info Box */}
-        <View style={styles.infoBox}>
-          <Feather name="info" size={20} color="#FF6B6B" />
-          <Text style={styles.infoText}>
-            Lakukan penilaian SAGA secara sistematis dan cepat untuk penanganan
-            awal yang tepat.
-          </Text>
-        </View>
+            <TouchableOpacity
+              style={[
+                styles.navButton,
+                currentIndex === sagaCards.length - 1 && styles.disabledButton,
+              ]}
+              onPress={handleNext}
+              disabled={currentIndex === sagaCards.length - 1}
+            >
+              <Text
+                style={[
+                  styles.navButtonText,
+                  currentIndex === sagaCards.length - 1 &&
+                    styles.disabledButtonText,
+                ]}
+              >
+                Berikutnya
+              </Text>
+              <Feather
+                name="chevron-right"
+                size={24}
+                color={currentIndex === sagaCards.length - 1 ? "#CCC" : "#333"}
+              />
+            </TouchableOpacity>
+          </View>
 
-        {/* Quick Action Button */}
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={() => navigation.navigate("CekKondisiScreen")}
-        >
-          <Feather name="arrow-right" size={20} color="white" />
-          <Text style={styles.actionButtonText}>Mulai Penilaian</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+          {/* Info Box */}
+          <View style={styles.infoBox}>
+            <Feather name="info" size={20} color="#FF6B6B" />
+            <Text style={styles.infoText}>
+              Lakukan penilaian SAGA secara sistematis dan cepat untuk
+              penanganan awal yang tepat.
+            </Text>
+          </View>
+
+          {/* Quick Action Button */}
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => navigation.navigate("CekKondisi")}
+          >
+            <Feather name="arrow-right" size={20} color="white" />
+            <Text style={styles.actionButtonText}>Mulai Penilaian</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </BackgroundWrapper>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "transparent",
   },
   scrollContent: {
     paddingBottom: 40,
@@ -271,7 +277,6 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 24,
   },
   mainCard: {
     borderRadius: 24,
@@ -352,7 +357,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    marginTop: 28,
+    marginTop: 10,
     gap: 12,
   },
   navButton: {
@@ -380,7 +385,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     gap: 8,
-    marginTop: 24,
+    marginTop: 20,
   },
   dot: {
     width: 10,
@@ -401,8 +406,8 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     backgroundColor: "#FFF5F5",
     borderRadius: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: "#FF6B6B",
+    // borderLeftWidth: 4,
+    // borderLeftColor: "#FF6B6B",
     gap: 12,
     alignItems: "flex-start",
   },
@@ -416,7 +421,8 @@ const styles = StyleSheet.create({
   actionButton: {
     flexDirection: "row",
     marginHorizontal: 16,
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 35,
     paddingVertical: 14,
     paddingHorizontal: 24,
     backgroundColor: "#FF6B6B",

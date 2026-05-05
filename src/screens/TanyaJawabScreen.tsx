@@ -1,120 +1,196 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import {
+  LayoutAnimation,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  UIManager,
+  View,
+} from "react-native";
+import { BackgroundWrapper } from "../components/BackgroundWrapper";
 import { CustomHeader } from "../components/CustomHeader";
+
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 interface TanyaJawabScreenProps {
   navigation: any;
 }
 
+const FAQ_DATA = [
+  {
+    question: "🌡️ Anak saya panas, apakah itu demam?",
+    answer:
+      "Anak dikatakan demam jika suhu tubuh mencapai 38°C atau lebih. Gunakan termometer agar hasil lebih akurat. Demam adalah respon tubuh terhadap infeksi, jadi perlu dipantau kondisinya.",
+  },
+  {
+    question: "🤒 Perlu langsung ke dokter saat anak demam?",
+    answer:
+      "Tidak selalu. Jika anak masih aktif, mau minum, dan tidak ada tanda bahaya, perawatan di rumah bisa dilakukan. Namun, jika demam tinggi, berlangsung lama, atau disertai gejala lain, sebaiknya diperiksakan.",
+  },
+  {
+    question: "💧 Anak tidak mau minum, apa yang harus saya lakukan?",
+    answer:
+      "Coba berikan cairan sedikit demi sedikit tetapi sering. Tetap tawarkan ASI atau minuman lain. Jika anak tetap menolak atau tampak lemas, kondisi ini berbahaya dan perlu segera diperiksa.",
+  },
+  {
+    question: "🤮 Anak muntah setelah makan, kapan harus khawatir?",
+    answer:
+      "Jika muntah hanya sesekali, masih bisa dipantau. Namun jika setiap makan atau minum selalu muntah, atau terjadi berulang, anak berisiko dehidrasi dan perlu penanganan medis.",
+  },
+  {
+    question: "⚡ Apa yang harus dilakukan saat anak kejang?",
+    answer:
+      "Segera baringkan anak di tempat yang aman dan posisikan miring agar tidak tersedak. Jangan memasukkan benda ke mulut dan jangan menahan gerakan. Setelah kejang berhenti, segera bawa ke fasilitas kesehatan.",
+  },
+  {
+    question: "🌬️ Bagaimana cara mengetahui napas anak bermasalah?",
+    answer:
+      "Perhatikan apakah napas lebih cepat dari biasanya, tampak berat, atau ada tarikan pada dinding dada. Jika ada tanda tersebut, itu menunjukkan gangguan pernapasan dan perlu segera diperiksa.",
+  },
+  {
+    question: "😴 Anak sulit dibangunkan, apakah itu normal?",
+    answer:
+      "Jika anak hanya tidur, biasanya masih bisa dibangunkan. Namun jika tidak merespon saat dipanggil atau disentuh, ini merupakan tanda bahaya yang memerlukan penanganan segera.",
+  },
+  {
+    question: "🏠 Kapan anak cukup dirawat di rumah?",
+    answer:
+      "Anak bisa dirawat di rumah jika kondisinya masih baik, seperti mau minum, tidak lemas, dan tidak ada tanda bahaya. Tetap lakukan pemantauan secara rutin.",
+  },
+  {
+    question: "🚑 Kapan harus segera ke fasilitas kesehatan?",
+    answer:
+      "Segera bawa anak ke fasilitas kesehatan jika muncul salah satu tanda berikut:\n• Tidak mau minum atau menyusu\n• Muntah terus menerus\n• Kejang\n• Tidak sadar atau sangat lemas\n• Sesak napas",
+  },
+];
+
 export const TanyaJawabScreen = ({ navigation }: TanyaJawabScreenProps) => {
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+
+  const toggleExpand = (index: number) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
+
   const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
       flex: 1,
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "transparent",
     },
     scrollContent: {
-      paddingHorizontal: 16,
-      paddingVertical: 20,
+      paddingHorizontal: 20,
+      paddingVertical: 24,
+      paddingBottom: 40,
+    },
+    headerText: {
+      fontSize: 16,
+      color: "#64748B",
+      marginBottom: 20,
+      lineHeight: 24,
+      textAlign: "center",
     },
     faqCard: {
       backgroundColor: "#FFFFFF",
-      borderRadius: 12,
+      borderRadius: 16,
+      marginBottom: 16,
+      shadowColor: "#0F172A",
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.05,
+      shadowRadius: 12,
+      elevation: 4,
+      overflow: "hidden",
+      borderWidth: 1,
+      borderColor: "#F1F5F9",
+    },
+    faqHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
       padding: 16,
-      marginBottom: 12,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
+      backgroundColor: "#FFFFFF",
     },
     question: {
-      fontSize: 14,
-      fontWeight: "700",
-      color: "#1E3A8A",
-      marginBottom: 8,
+      flex: 1,
+      fontSize: 15,
+      fontWeight: "600",
+      color: "#1E293B",
+      marginRight: 16,
+      lineHeight: 22,
+    },
+    answerContainer: {
+      paddingHorizontal: 16,
+      paddingBottom: 16,
+      paddingTop: 4,
+      backgroundColor: "#F8FAFC",
+      borderTopWidth: 1,
+      borderTopColor: "#F1F5F9",
     },
     answer: {
-      fontSize: 13,
-      color: "#666666",
-      lineHeight: 20,
+      fontSize: 14,
+      color: "#475569",
+      lineHeight: 22,
+      marginTop: 8,
     },
   });
 
   return (
-    <SafeAreaView style={styles.container}>
-      <CustomHeader
-        title="Tanya Jawab"
-        showBack
-        onBackPress={() => navigation.goBack()}
-      />
-      <ScrollView style={styles.container}>
-        <View style={styles.scrollContent}>
-          <View style={styles.faqCard}>
-            <Text style={styles.question}>
-              Q: Bagaimana cara mengukur suhu tubuh balita dengan benar?
+    <BackgroundWrapper>
+      <SafeAreaView style={styles.safeArea}>
+        <CustomHeader
+          title="Tanya Jawab"
+          showBack
+          onBackPress={() => navigation.goBack()}
+        />
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.scrollContent}>
+            <Text style={styles.headerText}>
+              Temukan jawaban untuk pertanyaan yang sering ditanyakan seputar
+              kesehatan anak Anda.
             </Text>
-            <Text style={styles.answer}>
-              A: Gunakan termometer digital atau infrared. Untuk termometer
-              digital, letakkan di ketiak selama 5 menit. Untuk infrared,
-              arahkan ke dahi atau telinga.
-            </Text>
-          </View>
 
-          <View style={styles.faqCard}>
-            <Text style={styles.question}>
-              Q: Kapan saya harus memberikan obat penurun panas?
-            </Text>
-            <Text style={styles.answer}>
-              A: Berikan jika suhu tubuh sebesar 38.5 derajat Celsius atau
-              balita merasa tidak nyaman. Selalu ikuti dosis sesuai berat badan
-              anak.
-            </Text>
-          </View>
+            {FAQ_DATA.map((item, index) => {
+              const isExpanded = expandedIndex === index;
+              return (
+                <View key={index} style={styles.faqCard}>
+                  <TouchableOpacity
+                    style={styles.faqHeader}
+                    onPress={() => toggleExpand(index)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.question}>{item.question}</Text>
+                    <Ionicons
+                      name={isExpanded ? "chevron-up" : "chevron-down"}
+                      size={20}
+                      color="#64748B"
+                    />
+                  </TouchableOpacity>
 
-          <View style={styles.faqCard}>
-            <Text style={styles.question}>
-              Q: Apa tanda-tanda dehidrasi pada balita?
-            </Text>
-            <Text style={styles.answer}>
-              A: Tanda dehidrasi meliputi: mulut kering, bibir pucat, mata
-              cekung, tidak buang air kecil selama lebih dari 6 jam, dan
-              tangisan tanpa air mata.
-            </Text>
+                  {isExpanded && (
+                    <View style={styles.answerContainer}>
+                      <Text style={styles.answer}>{item.answer}</Text>
+                    </View>
+                  )}
+                </View>
+              );
+            })}
           </View>
-
-          <View style={styles.faqCard}>
-            <Text style={styles.question}>
-              Q: Haruskah saya terus memberikan ASI saat balita sakit?
-            </Text>
-            <Text style={styles.answer}>
-              A: Ya, sebaiknya lanjutkan ASI karena mengandung antibodi yang
-              membantu penyembuhan. Jika balita muntah, berikan lebih sering
-              dengan porsi kecil.
-            </Text>
-          </View>
-
-          <View style={styles.faqCard}>
-            <Text style={styles.question}>
-              Q: Berapa lama sebaiknya memantau gejala sebelum ke dokter?
-            </Text>
-            <Text style={styles.answer}>
-              A: Jika ada tanda bahaya, segera ke dokter. Jika gejala ringan,
-              pantau 24-48 jam. Jika tidak membaik atau semakin buruk,
-              konsultasi dengan dokter.
-            </Text>
-          </View>
-
-          <View style={styles.faqCard}>
-            <Text style={styles.question}>
-              Q: Apa perbedaan antara batuk biasa dan batuk berbahaya?
-            </Text>
-            <Text style={styles.answer}>
-              A: Batuk biasa tidak mengganggu napas, tidak ada mengi, dan anak
-              tetap aktif. Batuk berbahaya disertai napas cepat, mengi, atau
-              kesulitan bernapas.
-            </Text>
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </BackgroundWrapper>
   );
 };

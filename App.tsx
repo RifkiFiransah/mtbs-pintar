@@ -1,3 +1,4 @@
+import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import "react-native-gesture-handler";
 import { initDB } from "./src/database/db";
@@ -9,5 +10,14 @@ export default function App() {
     initDB().catch((error) => console.error("Failed to initialize DB:", error));
   }, []);
 
-  return <AppNavigator />;
+  return (
+    <>
+      <StatusBar
+        style="dark"
+        backgroundColor="transparent"
+        translucent={true}
+      />
+      <AppNavigator />
+    </>
+  );
 }

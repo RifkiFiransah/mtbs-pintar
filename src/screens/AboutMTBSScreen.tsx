@@ -7,6 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { BackgroundWrapper } from "../components/BackgroundWrapper";
 
 interface AboutMTBSScreenProps {
   navigation: any;
@@ -14,9 +15,12 @@ interface AboutMTBSScreenProps {
 
 export const AboutMTBSScreen = ({ navigation }: AboutMTBSScreenProps) => {
   const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
       flex: 1,
-      backgroundColor: "#FFFFFF",
+      backgroundColor: "transparent",
     },
     backgroundImage: {
       position: "absolute",
@@ -56,34 +60,44 @@ export const AboutMTBSScreen = ({ navigation }: AboutMTBSScreenProps) => {
     contentWrapper: {
       flex: 1,
       paddingHorizontal: 20,
-      paddingTop: 30,
+      paddingTop: 45,
+      paddingBottom: 40,
       justifyContent: "center",
       zIndex: 1,
     },
     noteCard: {
-      backgroundColor: "#FFFFFF",
-      borderRadius: 24,
-      borderWidth: 3,
-      borderColor: "#6B4423",
-      padding: 24,
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 4,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 8,
-      elevation: 5,
-      overflow: "hidden",
+      // backgroundColor: "#FFFFFF",
+      // borderRadius: 24,
+      // borderWidth: 3,
+      // borderColor: "#6B4423",
+      // padding: 24,
+      // shadowColor: "#000",
+      // shadowOffset: {
+      //   width: 0,
+      //   height: 4,
+      // },
+      // shadowOpacity: 0.1,
+      // shadowRadius: 8,
+      // elevation: 5,
+      // overflow: "hidden",
     },
     noteCardBackground: {
       position: "absolute",
-      width: "100%",
-      height: "100%",
-      resizeMode: "cover",
+      left: -10,
+      right: -10,
+      top: -40,
+      bottom: -20,
+      width: "110%",
+      height: "115%",
+      resizeMode: "stretch",
     },
     noteCardContent: {
       zIndex: 1,
+      width: "100%",
+      paddingLeft: 55,
+      paddingRight: 40,
+      paddingTop: 20,
+      paddingBottom: 30,
     },
     spiralHole: {
       width: 10,
@@ -101,44 +115,44 @@ export const AboutMTBSScreen = ({ navigation }: AboutMTBSScreenProps) => {
       justifyContent: "space-around",
       paddingVertical: 40,
     },
-    ribbon: {
-      position: "absolute",
-      width: 30,
-      height: 40,
-      backgroundColor: "#9DB4D4",
-      top: -20,
-      right: 30,
-      borderRadius: 4,
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0,
-    },
+    // ribbon: {
+    //   position: "absolute",
+    //   width: 30,
+    //   height: 40,
+    //   backgroundColor: "#9DB4D4",
+    //   top: -20,
+    //   right: 30,
+    //   borderRadius: 4,
+    //   borderBottomLeftRadius: 0,
+    //   borderBottomRightRadius: 0,
+    // },
     contentTitle: {
       fontSize: 20,
       fontWeight: "700",
       color: "#1E3A8A",
-      marginBottom: 16,
+      marginBottom: 10,
       textAlign: "center",
     },
     contentText: {
       fontSize: 14,
       lineHeight: 22,
       color: "#1F2937",
-      marginBottom: 16,
+      marginBottom: 10,
       textAlign: "justify",
     },
     sectionTitle: {
       fontSize: 16,
       fontWeight: "700",
       color: "#1E3A8A",
-      marginBottom: 12,
-      marginTop: 16,
+      marginBottom: 0,
+      marginTop: 0,
     },
     bulletPoint: {
       fontSize: 14,
       lineHeight: 22,
       color: "#1F2937",
       marginBottom: 10,
-      marginLeft: 16,
+      marginLeft: 10,
     },
     bulletDot: {
       fontSize: 14,
@@ -148,13 +162,13 @@ export const AboutMTBSScreen = ({ navigation }: AboutMTBSScreenProps) => {
     },
     footer: {
       paddingHorizontal: 20,
-      paddingBottom: 50,
+      marginBottom: 80,
       gap: 12,
       justifyContent: "center",
     },
     backButton: {
       backgroundColor: "#FFFFFF",
-      paddingVertical: 14,
+      paddingVertical: 12,
       borderRadius: 12,
       justifyContent: "center",
       alignItems: "center",
@@ -173,49 +187,50 @@ export const AboutMTBSScreen = ({ navigation }: AboutMTBSScreenProps) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Image
-        source={require("../../assets/images/bg/bg-1.png")}
-        style={styles.backgroundImage}
-      />
+    <BackgroundWrapper>
+      <SafeAreaView style={styles.container}>
+        <Image
+          source={require("../../assets/images/bg/bg-1.png")}
+          style={styles.backgroundImage}
+        />
 
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        bounces={false}
-        style={{ flex: 1 }}
-      >
-        {/* Top Wave Section */}
-        <View style={styles.topWave}>
-          <View style={styles.logoContainer}>
-            <Image
-              source={require("../../assets/images/logos/ubhi.png")}
-              style={styles.logo}
-            />
-            <Text style={styles.ubhiText}>UBHI</Text>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          bounces={false}
+          style={{ flex: 1 }}
+        >
+          {/* Top Wave Section */}
+          <View style={styles.topWave}>
+            <View style={styles.logoContainer}>
+              <Image
+                source={require("../../assets/images/logos/ubhi.png")}
+                style={styles.logo}
+              />
+              <Text style={styles.ubhiText}>UBHI</Text>
+            </View>
           </View>
-        </View>
 
-        {/* Content Section */}
-        <View style={styles.contentWrapper}>
-          <View style={styles.noteCard}>
-            {/* Background Image */}
-            <Image
-              source={require("../../assets/images/bg/bg-detail-text.png")}
-              style={styles.noteCardBackground}
-            />
+          {/* Content Section */}
+          <View style={styles.contentWrapper}>
+            <View style={styles.noteCard}>
+              {/* Background Image */}
+              <Image
+                source={require("../../assets/images/bg/bg-detail-text.png")}
+                style={styles.noteCardBackground}
+              />
 
-            {/* Ribbon */}
-            <View style={styles.ribbon} />
+              {/* Ribbon */}
+              {/* <View style={styles.ribbon} /> */}
 
-            {/* Spiral Holes Left */}
-            <View style={styles.spiralHolesLeft}>
+              {/* Spiral Holes Left */}
+              {/* <View style={styles.spiralHolesLeft}>
               {[...Array(12)].map((_, i) => (
                 <View key={i} style={styles.spiralHole} />
               ))}
-            </View>
+            </View> */}
 
-            {/* Spiral Holes Right */}
-            <View
+              {/* Spiral Holes Right */}
+              {/* <View
               style={[
                 styles.spiralHolesLeft,
                 { left: "auto", right: -15, alignItems: "center" },
@@ -224,51 +239,53 @@ export const AboutMTBSScreen = ({ navigation }: AboutMTBSScreenProps) => {
               {[...Array(12)].map((_, i) => (
                 <View key={i} style={styles.spiralHole} />
               ))}
-            </View>
+            </View> */}
 
-            {/* Content */}
-            <View style={styles.noteCardContent}>
-              <Text style={styles.contentTitle}>Tentang MTBS-Pintar</Text>
+              {/* Content */}
+              <View style={styles.noteCardContent}>
+                <Text style={styles.contentTitle}>Tentang MTBS-Pintar</Text>
 
-              <Text style={styles.contentText}>
-                MTBS-Pintar adalah aplikasi edukasi kesehatan untuk membantu ibu
-                mengenali tanda bahaya pada balita sejak dini. Aplikasi ini
-                menggunakan pendekatan Manajemen Terpadu Balita Sakit (MTBS).
-              </Text>
+                <Text style={styles.contentText}>
+                  MTBS-Pintar adalah aplikasi edukasi kesehatan untuk membantu
+                  ibu mengenali tanda bahaya pada balita sejak dini. Aplikasi
+                  ini menggunakan pendekatan Manajemen Terpadu Balita Sakit
+                  (MTBS).
+                </Text>
 
-              <Text style={styles.contentText}>
-                Dengan MTBS-Pintar, ibu dapat belajar cara mendeteksi kondisi
-                berbahaya dan mengetahui langkah penanganan awal secara cepat
-                dan tepat.
-              </Text>
+                <Text style={styles.contentText}>
+                  Dengan MTBS-Pintar, ibu dapat belajar cara mendeteksi kondisi
+                  berbahaya dan mengetahui langkah penanganan awal secara cepat
+                  dan tepat.
+                </Text>
 
-              <Text style={styles.sectionTitle}>Tujuan</Text>
+                <Text style={styles.sectionTitle}>Tujuan</Text>
 
-              <Text style={styles.bulletPoint}>
-                <Text style={styles.bulletDot}>•</Text>
-                Membantu deteksi dini tanda bahaya balita
-              </Text>
+                <Text style={styles.bulletPoint}>
+                  <Text style={styles.bulletDot}>•</Text>
+                  Membantu deteksi dini tanda bahaya balita
+                </Text>
 
-              <Text style={styles.bulletPoint}>
-                <Text style={styles.bulletDot}>•</Text>
-                Meningkatkan kepercayaan diri ibu
-              </Text>
+                <Text style={styles.bulletPoint}>
+                  <Text style={styles.bulletDot}>•</Text>
+                  Meningkatkan kepercayaan diri ibu
+                </Text>
 
-              <Text style={styles.bulletPoint}>
-                <Text style={styles.bulletDot}>•</Text>
-                Mendukung penanganan yang cepat dan tepat
-              </Text>
+                <Text style={styles.bulletPoint}>
+                  <Text style={styles.bulletDot}>•</Text>
+                  Mendukung penanganan yang cepat dan tepat
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Pressable style={styles.backButton} onPress={handleBack}>
-            <Text style={styles.backButtonText}>Kembali</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Pressable style={styles.backButton} onPress={handleBack}>
+              <Text style={styles.backButtonText}>Kembali</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </BackgroundWrapper>
   );
 };

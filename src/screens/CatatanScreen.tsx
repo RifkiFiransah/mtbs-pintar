@@ -1,3 +1,4 @@
+import { BackgroundWrapper } from "../components/BackgroundWrapper";
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { CustomHeader } from "../components/CustomHeader";
 
@@ -7,9 +8,12 @@ interface CatatanScreenProps {
 
 export const CatatanScreen = ({ navigation }: CatatanScreenProps) => {
   const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
       flex: 1,
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "transparent",
     },
     scrollContent: {
       paddingHorizontal: 16,
@@ -58,6 +62,7 @@ export const CatatanScreen = ({ navigation }: CatatanScreenProps) => {
   });
 
   return (
+    <BackgroundWrapper>
     <SafeAreaView style={styles.container}>
       <CustomHeader title="Catatan" />
       <ScrollView style={styles.container}>
@@ -71,5 +76,6 @@ export const CatatanScreen = ({ navigation }: CatatanScreenProps) => {
         </View>
       </ScrollView>
     </SafeAreaView>
+    </BackgroundWrapper>
   );
 };

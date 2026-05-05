@@ -1,3 +1,4 @@
+import { BackgroundWrapper } from "../components/BackgroundWrapper";
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { CustomHeader } from "../components/CustomHeader";
 
@@ -7,9 +8,12 @@ interface ProfilScreenProps {
 
 export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
   const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
       flex: 1,
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "transparent",
     },
     scrollContent: {
       paddingHorizontal: 16,
@@ -85,6 +89,7 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
   });
 
   return (
+    <BackgroundWrapper>
     <SafeAreaView style={styles.container}>
       <CustomHeader title="Profil" />
       <ScrollView style={styles.container}>
@@ -124,5 +129,6 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
         </View>
       </ScrollView>
     </SafeAreaView>
+    </BackgroundWrapper>
   );
 };

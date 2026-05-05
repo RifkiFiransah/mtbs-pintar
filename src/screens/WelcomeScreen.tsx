@@ -7,6 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { BackgroundWrapper } from "../components/BackgroundWrapper";
 import { CustomButton } from "../components/CustomButton";
 
 interface WelcomeScreenProps {
@@ -17,7 +18,7 @@ export const WelcomeScreen = ({ navigation }: WelcomeScreenProps) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#FFFFFF",
+      backgroundColor: "transparent",
     },
     backgroundImage: {
       position: "absolute",
@@ -129,56 +130,63 @@ export const WelcomeScreen = ({ navigation }: WelcomeScreenProps) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Image
-        source={require("../../assets/images/bg/bg-1.png")}
-        style={styles.backgroundImage}
-      />
-      <ScrollView contentContainerStyle={styles.scrollContent} bounces={false}>
-        {/* Top Wave Section */}
-        <View style={styles.topWave}>
-          <View style={styles.logoContainer}>
-            <Image
-              source={require("../../assets/images/logos/ubhi.png")}
-              style={styles.logo}
+    <BackgroundWrapper>
+      <SafeAreaView style={styles.container}>
+        <Image
+          source={require("../../assets/images/bg/bg-1.png")}
+          style={styles.backgroundImage}
+        />
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          bounces={false}
+        >
+          {/* Top Wave Section */}
+          <View style={styles.topWave}>
+            <View style={styles.logoContainer}>
+              <Image
+                source={require("../../assets/images/logos/ubhi.png")}
+                style={styles.logo}
+              />
+              <Text style={[styles.title, styles.titleLogo]}>UBHI</Text>
+            </View>
+          </View>
+
+          {/* Main Content */}
+          <View style={styles.content}>
+            <View style={styles.headerSection}>
+              <Text style={styles.title}>MTBS-Pintar</Text>
+              <Text style={styles.subtitle}>Manajemen Terpadu</Text>
+              <Text style={styles.subtitle}>Balita Sakit</Text>
+              <Text style={styles.tagline}>
+                Kenali cepat, tangani tepat,{"\n"}untuk balita sehat
+              </Text>
+            </View>
+
+            <View style={styles.illustrationContainer}>
+              <Image
+                source={require("../../assets/images/logos/utama.png")}
+                style={styles.illustration}
+              />
+            </View>
+          </View>
+
+          {/* Footer Buttons */}
+          <View style={styles.footer}>
+            <CustomButton
+              title="Mulai"
+              onPress={handleGetStarted}
+              variant="primary"
+              size="large"
             />
-            <Text style={[styles.title, styles.titleLogo]}>UBHI</Text>
+
+            <Pressable style={styles.secondaryButton} onPress={handleAbout}>
+              <Text style={styles.secondaryButtonText}>
+                Tentang MTBS-Pintar
+              </Text>
+            </Pressable>
           </View>
-        </View>
-
-        {/* Main Content */}
-        <View style={styles.content}>
-          <View style={styles.headerSection}>
-            <Text style={styles.title}>MTBS-Pintar</Text>
-            <Text style={styles.subtitle}>Manajemen Terpadu</Text>
-            <Text style={styles.subtitle}>Balita Sakit</Text>
-            <Text style={styles.tagline}>
-              Kenali cepat, tangani tepat,{"\n"}untuk balita sehat
-            </Text>
-          </View>
-
-          <View style={styles.illustrationContainer}>
-            <Image
-              source={require("../../assets/images/logos/utama.png")}
-              style={styles.illustration}
-            />
-          </View>
-        </View>
-
-        {/* Footer Buttons */}
-        <View style={styles.footer}>
-          <CustomButton
-            title="Mulai"
-            onPress={handleGetStarted}
-            variant="primary"
-            size="large"
-          />
-
-          <Pressable style={styles.secondaryButton} onPress={handleAbout}>
-            <Text style={styles.secondaryButtonText}>Tentang MTBS-Pintar</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </BackgroundWrapper>
   );
 };

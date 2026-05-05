@@ -1,3 +1,4 @@
+import { BackgroundWrapper } from "../../components/BackgroundWrapper";
 import { Feather } from "@expo/vector-icons";
 import {
   Image,
@@ -46,9 +47,12 @@ export const TidakBisaMinumScreen = ({
   ];
 
   const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
       flex: 1,
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "transparent",
     },
     scrollContent: {
       paddingHorizontal: 16,
@@ -245,6 +249,7 @@ export const TidakBisaMinumScreen = ({
   });
 
   return (
+    <BackgroundWrapper>
     <SafeAreaView style={styles.container}>
       <CustomHeader
         title="Tidak bisa minum atau menyusu"
@@ -430,5 +435,6 @@ export const TidakBisaMinumScreen = ({
         </View>
       </ScrollView>
     </SafeAreaView>
+    </BackgroundWrapper>
   );
 };

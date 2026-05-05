@@ -10,6 +10,7 @@ import { BerandaScreen } from "../screens/BerandaScreen";
 import { CatatanScreen } from "../screens/CatatanScreen";
 import { CekKondisiScreen } from "../screens/CekKondisiScreen";
 import { PengingatScreen } from "../screens/PengingatScreen";
+import { PerawatanDiRumahScreen } from "../screens/PerawatanDiRumahScreen";
 import { ProfilScreen } from "../screens/ProfilScreen";
 import { TandaBahayaScreen } from "../screens/TandaBahayaScreen";
 import { TanyaJawabScreen } from "../screens/TanyaJawabScreen";
@@ -196,6 +197,13 @@ export default function AppNavigator() {
         <Stack.Screen
           name="Tindakan"
           component={TindakanScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="PerawatanDiRumah"
+          component={PerawatanDiRumahScreen}
           options={{
             headerShown: false,
           }}

@@ -1,3 +1,4 @@
+import { BackgroundWrapper } from "../../components/BackgroundWrapper";
 import { Feather } from "@expo/vector-icons";
 import {
   Image,
@@ -42,9 +43,12 @@ export const PenurunanKesadaranScreen = ({
   ];
 
   const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
       flex: 1,
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "transparent",
     },
     scrollContent: {
       paddingHorizontal: 12,
@@ -249,6 +253,7 @@ export const PenurunanKesadaranScreen = ({
   });
 
   return (
+    <BackgroundWrapper>
     <SafeAreaView style={styles.container}>
       <CustomHeader
         title="Penampilan Anak Berubah / Penurunan Kesadaran"
@@ -487,5 +492,6 @@ export const PenurunanKesadaranScreen = ({
         </View>
       </ScrollView>
     </SafeAreaView>
+    </BackgroundWrapper>
   );
 };

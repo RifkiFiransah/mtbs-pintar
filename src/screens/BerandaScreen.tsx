@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { BackgroundWrapper } from "../components/BackgroundWrapper";
 
 interface BerandaScreenProps {
   navigation: any;
@@ -15,9 +16,12 @@ interface BerandaScreenProps {
 
 export const BerandaScreen = ({ navigation }: BerandaScreenProps) => {
   const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
       flex: 1,
-      // backgroundColor: "#F8F9FA",
+      backgroundColor: "transparent",
     },
     headerSection: {
       backgroundColor: "#2B9FFF",
@@ -29,16 +33,16 @@ export const BerandaScreen = ({ navigation }: BerandaScreenProps) => {
     },
     logoContainer: {
       alignItems: "center",
-      paddingTop: 50,
+      paddingTop: 30,
     },
     logo: {
-      width: 120,
-      height: 120,
+      width: 100,
+      height: 100,
       resizeMode: "contain",
     },
     headerContent: {
       paddingHorizontal: 20,
-      paddingVertical: 10,
+      paddingVertical: 3,
       alignItems: "center",
       justifyContent: "center",
     },
@@ -63,101 +67,45 @@ export const BerandaScreen = ({ navigation }: BerandaScreenProps) => {
     },
     scrollContent: {
       paddingHorizontal: 16,
-      paddingVertical: 35,
-      paddingBottom: 30,
+      paddingVertical: 20,
+      // paddingBottom: 30,
     },
     menuGrid: {
       flexDirection: "row",
       flexWrap: "wrap",
-      justifyContent: "space-between",
+      justifyContent: "center",
       gap: 12,
     },
     menuCardLarge: {
-      width: "48%",
+      width: "45%",
       backgroundColor: "#FFFFFF",
-      borderRadius: 16,
+      borderRadius: 20,
       padding: 16,
       alignItems: "center",
       justifyContent: "center",
       shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.08,
-      shadowRadius: 4,
-      elevation: 3,
-      minHeight: 150,
-    },
-    menuCardSmall: {
-      width: "48%",
-      backgroundColor: "#FFFFFF",
-      borderRadius: 16,
-      padding: 20,
-      alignItems: "center",
-      justifyContent: "center",
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.08,
-      shadowRadius: 4,
-      elevation: 3,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.05,
+      shadowRadius: 8,
+      elevation: 4,
       minHeight: 140,
-    },
-    menuCardFull: {
-      width: "100%",
-      backgroundColor: "#FFFFFF",
-      borderRadius: 16,
-      padding: 20,
-      alignItems: "center",
-      justifyContent: "center",
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.08,
-      shadowRadius: 4,
-      elevation: 3,
-      minHeight: 100,
+      borderWidth: 1,
+      borderColor: "#F3F4F6",
     },
     iconContainer: {
-      width: 60,
-      height: 60,
-      borderRadius: 12,
+      width: 56,
+      height: 56,
+      borderRadius: 28, // Membuat ikon bulat
       justifyContent: "center",
       alignItems: "center",
       marginBottom: 12,
     },
-    iconWarning: {
-      backgroundColor: "#FF5252",
-    },
-    iconCheckmark: {
-      backgroundColor: "#2563EB",
-    },
-    iconMedical: {
-      backgroundColor: "#FF5252",
-    },
-    iconHospital: {
-      backgroundColor: "#2563EB",
-    },
-    iconQuestion: {
-      backgroundColor: "#2563EB",
-    },
     menuTitle: {
-      fontSize: 15,
+      fontSize: 14,
       fontWeight: "700",
       color: "#1E3A8A",
       textAlign: "center",
-      marginBottom: 4,
-    },
-    menuDescription: {
-      fontSize: 12,
-      color: "#666666",
-      textAlign: "center",
-      lineHeight: 16,
+      lineHeight: 20,
     },
   });
 
@@ -166,103 +114,110 @@ export const BerandaScreen = ({ navigation }: BerandaScreenProps) => {
       id: "warning",
       title: "Tanda Bahaya\nUmum",
       icon: "warning",
-      iconColor: "#FFFFFF",
-      bgColor: "#FF5252",
+      iconColor: "#EF4444", // Merah solid
+      bgColor: "#FEE2E2", // Merah pastel
       onPress: () => navigation.navigate("TandaBahaya"),
     },
     {
       id: "checkmark",
       title: "Cek Kondisi\nBalita",
       icon: "check-circle",
-      iconColor: "#FFFFFF",
-      bgColor: "#2563EB",
+      iconColor: "#3B82F6", // Biru solid
+      bgColor: "#DBEAFE", // Biru pastel
       onPress: () => navigation.navigate("CekKondisi"),
     },
     {
       id: "medical",
       title: "Apa yang harus\nDilakukan",
       icon: "medical-services",
-      iconColor: "#FFFFFF",
-      bgColor: "#FF5252",
+      iconColor: "#10B981", // Hijau solid
+      bgColor: "#D1FAE5", // Hijau pastel
       onPress: () => navigation.navigate("Tindakan"),
     },
     {
       id: "hospital",
       title: "Perawatan\nDi Rumah",
       icon: "local-hospital",
-      iconColor: "#FFFFFF",
-      bgColor: "#2563EB",
-      onPress: () => {},
+      iconColor: "#8B5CF6", // Ungu solid
+      bgColor: "#EDE9FE", // Ungu pastel
+      onPress: () => navigation.navigate("PerawatanDiRumah"),
     },
     {
       id: "question",
       title: "Tanya Jawab",
-      icon: "help",
-      iconColor: "#FFFFFF",
-      bgColor: "#2563EB",
+      icon: "help-center",
+      iconColor: "#F59E0B", // Oranye solid
+      bgColor: "#FEF3C7", // Oranye pastel
       onPress: () => navigation.navigate("TanyaJawab"),
-      fullWidth: true,
+    },
+    {
+      id: "welcome",
+      title: "Kembali ke\nWelcome",
+      icon: "exit-to-app",
+      iconColor: "#6B7280", // Abu-abu solid
+      bgColor: "#F3F4F6", // Abu-abu pastel
+      onPress: () => navigation.navigate("Welcome"),
     },
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        bounces={false}
-        showsVerticalScrollIndicator={false}
-        style={styles.container}
-      >
-        {/* Header Section */}
-        <View style={styles.headerSection}>
-          <View style={styles.logoContainer}>
-            <Image
-              source={require("../../assets/images/logos/utama.png")}
-              style={styles.logo}
-            />
-          </View>
-          <View style={styles.headerContent}>
-            <View style={styles.headerText}>
-              <Text style={styles.greeting}>👋 Halo, Ibu</Text>
-              <Text style={styles.subtext}>
-                Ayo belajar bersama tentang kesehatan balita
-              </Text>
-              <Text style={[styles.subtext, { marginTop: 12 }]}>
-                Kenali Tanda Bahaya Sejak Dini!!
-              </Text>
+    <BackgroundWrapper>
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+          style={styles.container}
+        >
+          {/* Header Section */}
+          <View style={styles.headerSection}>
+            <View style={styles.logoContainer}>
+              <Image
+                source={require("../../assets/images/logos/utama.png")}
+                style={styles.logo}
+              />
+            </View>
+            <View style={styles.headerContent}>
+              <View style={styles.headerText}>
+                <Text style={styles.greeting}>👋 Halo, Ibu</Text>
+                <Text style={styles.subtext}>
+                  Ayo belajar bersama tentang kesehatan balita
+                </Text>
+                <Text style={[styles.subtext, { marginTop: 12 }]}>
+                  Kenali Tanda Bahaya Sejak Dini!!
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        {/* Menu Grid */}
-        <View style={styles.scrollContent}>
-          <View style={styles.menuGrid}>
-            {menuItems.map((item, index) => (
-              <TouchableOpacity
-                key={item.id}
-                style={
-                  item.fullWidth ? styles.menuCardFull : styles.menuCardLarge
-                }
-                onPress={item.onPress}
-                activeOpacity={0.7}
-              >
-                <View
-                  style={[
-                    styles.iconContainer,
-                    { backgroundColor: item.bgColor },
-                  ]}
+          {/* Menu Grid */}
+          <View style={styles.scrollContent}>
+            <View style={styles.menuGrid}>
+              {menuItems.map((item, index) => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.menuCardLarge}
+                  onPress={item.onPress}
+                  activeOpacity={0.7}
                 >
-                  <MaterialIcons
-                    name={item.icon as any}
-                    size={32}
-                    color={item.iconColor}
-                  />
-                </View>
-                <Text style={styles.menuTitle}>{item.title}</Text>
-              </TouchableOpacity>
-            ))}
+                  <View
+                    style={[
+                      styles.iconContainer,
+                      { backgroundColor: item.bgColor },
+                    ]}
+                  >
+                    <MaterialIcons
+                      name={item.icon as any}
+                      size={28}
+                      color={item.iconColor}
+                    />
+                  </View>
+                  <Text style={styles.menuTitle}>{item.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </BackgroundWrapper>
   );
 };
