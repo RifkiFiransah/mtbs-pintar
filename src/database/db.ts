@@ -32,12 +32,35 @@ export const initDB = async () => {
       // Membuat tabel untuk pengingat
       await txn.execAsync(`
         CREATE TABLE IF NOT EXISTS reminders (
-          id INTEGER PRIMARY KEY,
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
           title TEXT NOT NULL,
           description TEXT,
           reminder_date TEXT NOT NULL,
           reminder_time TEXT,
           is_completed INTEGER DEFAULT 0,
+          notification_id TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      // Membuat tabel untuk catatan (rekam medis anak)
+      await txn.execAsync(`
+        CREATE TABLE IF NOT EXISTS catatan (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          child_id INTEGER,
+          tanggal_pemeriksaan TEXT NOT NULL,
+          jam_pemeriksaan TEXT NOT NULL,
+          suhu_tubuh REAL,
+          nafsu_makan TEXT,
+          kondisi_anak TEXT,
+          napas_anak TEXT,
+          keluhan_utama TEXT,
+          tanda_bahaya TEXT,
+          penanganan TEXT,
+          penanganan_lainnya TEXT,
+          catatan_tambahan TEXT,
+          foto_uri TEXT,
+          status_kondisi TEXT,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
@@ -53,6 +76,41 @@ export const initDB = async () => {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
+
+      // Membuat tabel untuk profil ibu
+      await txn.execAsync(`
+        CREATE TABLE IF NOT EXISTS mothers (
+          id INTEGER PRIMARY KEY,
+          name TEXT NOT NULL,
+          age TEXT,
+          phone TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      // Seeding profil ibu jika belum ada
+      const existingMotherCount = await txn.getFirstAsync<{ count: number }>(
+        "SELECT COUNT(*) as count FROM mothers",
+      );
+
+      if (existingMotherCount && existingMotherCount.count === 0) {
+        await txn.runAsync(
+          `INSERT INTO mothers (name, age, phone) VALUES (?, ?, ?)`,
+          ["Siti Aisyah", "28 Tahun", "0812-3456-7890"]
+        );
+      }
+
+      // Seeding profil anak jika belum ada
+      const existingChildCount = await txn.getFirstAsync<{ count: number }>(
+        "SELECT COUNT(*) as count FROM children",
+      );
+
+      if (existingChildCount && existingChildCount.count === 0) {
+        await txn.runAsync(
+          `INSERT INTO children (name, date_of_birth, gender, blood_type) VALUES (?, ?, ?, ?)`,
+          ["Muhammad Zaki", "1 Tahun 8 Bulan", "Laki-laki", "O"]
+        );
+      }
 
       // Seeding pertanyaan awal jika belum ada
       const existingCount = await txn.getFirstAsync<{ count: number }>(
@@ -85,6 +143,35 @@ export const initDB = async () => {
           await txn.runAsync(
             `INSERT INTO questions (question_text, category, answer_type) VALUES (?, ?, ?)`,
             [q.question, q.category, "yes_no"],
+          );
+        }
+      }
+
+      // Seeding pengingat awal jika belum ada
+      const existingReminderCount = await txn.getFirstAsync<{ count: number }>(
+        "SELECT COUNT(*) as count FROM reminders",
+      );
+
+      if (existingReminderCount && existingReminderCount.count === 0) {
+        const today = new Date();
+        const todayStr = today.toISOString().split("T")[0];
+        
+        // Buat dummy untuk besok
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowStr = tomorrow.toISOString().split("T")[0];
+
+        const dummyReminders = [
+          { title: "Beri Obat Penurun Panas", description: "Paracetamol 5ml jika suhu > 38", reminder_date: todayStr, reminder_time: "08:00", is_completed: 0 },
+          { title: "Cek Suhu Tubuh", description: "Gunakan termometer di ketiak", reminder_date: todayStr, reminder_time: "12:00", is_completed: 0 },
+          { title: "Berikan ASI/Cairan", description: "Pastikan anak tidak dehidrasi", reminder_date: todayStr, reminder_time: "15:00", is_completed: 1 },
+          { title: "Kontrol ke Dokter", description: "Cek perkembangannya", reminder_date: tomorrowStr, reminder_time: "09:00", is_completed: 0 },
+        ];
+
+        for (const r of dummyReminders) {
+          await txn.runAsync(
+            `INSERT INTO reminders (title, description, reminder_date, reminder_time, is_completed) VALUES (?, ?, ?, ?, ?)`,
+            [r.title, r.description, r.reminder_date, r.reminder_time, r.is_completed],
           );
         }
       }
@@ -126,18 +213,34 @@ export const addCheckHistory = async (
 ) => {
   try {
     return await db.runAsync(
-      `INSERT INTO check_history (date_checked, result_summary, details, status) VALUES (?, ?, ?, ?)`,
-      [date, result_summary, details || "", "completed"],
+      "INSERT INTO check_history (date_checked, result_summary, details) VALUES (?, ?, ?)",
+      [date, result_summary, details || ""],
     );
   } catch (error) {
     console.error("Error adding check history:", error);
+    return null;
   }
 };
 
-export const getReminders = async () => {
+// =======================
+// Fungsi CRUD Pengingat
+// =======================
+
+export interface ReminderRow {
+  id: number;
+  title: string;
+  description: string;
+  reminder_date: string;
+  reminder_time: string;
+  is_completed: number;
+  notification_id?: string;
+  created_at?: string;
+}
+
+export const getReminders = async (): Promise<ReminderRow[]> => {
   try {
     return await db.getAllAsync(
-      "SELECT * FROM reminders WHERE is_completed = 0 ORDER BY reminder_date",
+      "SELECT * FROM reminders ORDER BY reminder_date ASC, reminder_time ASC"
     );
   } catch (error) {
     console.error("Error fetching reminders:", error);
@@ -149,23 +252,61 @@ export const addReminder = async (
   title: string,
   description: string,
   reminder_date: string,
-  reminder_time?: string,
+  reminder_time: string,
+  notification_id?: string
 ) => {
   try {
-    return await db.runAsync(
-      `INSERT INTO reminders (title, description, reminder_date, reminder_time) VALUES (?, ?, ?, ?)`,
-      [title, description, reminder_date, reminder_time || ""],
+    const result = await db.runAsync(
+      "INSERT INTO reminders (title, description, reminder_date, reminder_time, is_completed, notification_id) VALUES (?, ?, ?, ?, ?, ?)",
+      [title, description, reminder_date, reminder_time, 0, notification_id || null]
     );
+    return result.lastInsertRowId;
   } catch (error) {
     console.error("Error adding reminder:", error);
+    return null;
+  }
+};
+
+export const toggleReminderStatus = async (id: number, is_completed: number) => {
+  try {
+    await db.runAsync("UPDATE reminders SET is_completed = ? WHERE id = ?", [
+      is_completed,
+      id,
+    ]);
+    return true;
+  } catch (error) {
+    console.error("Error updating reminder status:", error);
+    return false;
+  }
+};
+
+export const updateReminder = async (
+  id: number,
+  title: string,
+  description: string,
+  reminder_date: string,
+  reminder_time: string,
+  notification_id?: string
+) => {
+  try {
+    await db.runAsync(
+      "UPDATE reminders SET title = ?, description = ?, reminder_date = ?, reminder_time = ?, notification_id = ? WHERE id = ?",
+      [title, description, reminder_date, reminder_time, notification_id || null, id]
+    );
+    return true;
+  } catch (error) {
+    console.error("Error updating reminder:", error);
+    return false;
   }
 };
 
 export const deleteReminder = async (id: number) => {
   try {
-    return await db.runAsync("DELETE FROM reminders WHERE id = ?", [id]);
+    await db.runAsync("DELETE FROM reminders WHERE id = ?", [id]);
+    return true;
   } catch (error) {
     console.error("Error deleting reminder:", error);
+    return false;
   }
 };
 
@@ -193,6 +334,54 @@ export const addChild = async (
     );
   } catch (error) {
     console.error("Error adding child:", error);
+  }
+};
+
+export const updateChild = async (
+  id: number,
+  name: string,
+  date_of_birth: string,
+  gender?: string,
+  blood_type?: string,
+) => {
+  try {
+    await db.runAsync(
+      `UPDATE children SET name = ?, date_of_birth = ?, gender = ?, blood_type = ? WHERE id = ?`,
+      [name, date_of_birth, gender || "", blood_type || "", id]
+    );
+    return true;
+  } catch (error) {
+    console.error("Error updating child:", error);
+    return false;
+  }
+};
+
+export const getMothers = async () => {
+  try {
+    return await db.getAllAsync(
+      "SELECT * FROM mothers ORDER BY created_at DESC",
+    );
+  } catch (error) {
+    console.error("Error fetching mothers:", error);
+    return [];
+  }
+};
+
+export const updateMother = async (
+  id: number,
+  name: string,
+  age: string,
+  phone: string,
+) => {
+  try {
+    await db.runAsync(
+      `UPDATE mothers SET name = ?, age = ?, phone = ? WHERE id = ?`,
+      [name, age, phone, id]
+    );
+    return true;
+  } catch (error) {
+    console.error("Error updating mother:", error);
+    return false;
   }
 };
 

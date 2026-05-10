@@ -1,7 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-interface CustomHeaderProps {
+interface HeaderSafeAreaProps {
   title: string;
   showBack?: boolean;
   onBackPress?: () => void;
@@ -11,12 +11,12 @@ interface CustomHeaderProps {
   };
 }
 
-export const CustomHeader = ({
+export const HeaderSafeArea = ({
   title,
   showBack = false,
   onBackPress,
   rightAction,
-}: CustomHeaderProps) => {
+}: HeaderSafeAreaProps) => {
   const handleBack = () => {
     if (onBackPress) {
       onBackPress();
@@ -28,7 +28,6 @@ export const CustomHeader = ({
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      marginTop: 25,
       paddingHorizontal: 30,
       paddingVertical: 20,
       backgroundColor: "#F5F5F5",

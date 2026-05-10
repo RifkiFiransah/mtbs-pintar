@@ -2,15 +2,15 @@ import { Feather } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
   Dimensions,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { BackgroundWrapper } from "../../components/BackgroundWrapper";
-import { CustomHeader } from "../../components/CustomHeader";
+import { HeaderSafeArea } from "../../components/HeaderSafeArea";
 
 interface PenilaianSAGAScreenProps {
   navigation: any;
@@ -104,7 +104,7 @@ export const PenilaianSAGAScreen = ({
   return (
     <BackgroundWrapper>
       <SafeAreaView style={styles.container}>
-        <CustomHeader
+        <HeaderSafeArea
           title="Penilaian SAGA"
           showBack
           onBackPress={() => navigation.goBack()}

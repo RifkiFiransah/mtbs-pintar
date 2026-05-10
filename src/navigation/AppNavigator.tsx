@@ -9,13 +9,12 @@ import { AboutMTBSScreen } from "../screens/AboutMTBSScreen";
 import { BerandaScreen } from "../screens/BerandaScreen";
 import { CatatanScreen } from "../screens/CatatanScreen";
 import { CekKondisiScreen } from "../screens/CekKondisiScreen";
+import { DetailPengingatScreen } from "../screens/DetailPengingatScreen";
+import { FormCatatanScreen } from "../screens/FormCatatanScreen";
+import { FormPengingatScreen } from "../screens/FormPengingatScreen";
 import { PengingatScreen } from "../screens/PengingatScreen";
 import { PerawatanDiRumahScreen } from "../screens/PerawatanDiRumahScreen";
 import { ProfilScreen } from "../screens/ProfilScreen";
-import { TandaBahayaScreen } from "../screens/TandaBahayaScreen";
-import { TanyaJawabScreen } from "../screens/TanyaJawabScreen";
-import { TindakanScreen } from "../screens/TindakanScreen";
-import { WelcomeScreen } from "../screens/WelcomeScreen";
 import {
   KejangScreen,
   MuntahScreen,
@@ -24,6 +23,10 @@ import {
   SesakNafasScreen,
   TidakBisaMinumScreen,
 } from "../screens/tanda-bahaya";
+import { TandaBahayaScreen } from "../screens/TandaBahayaScreen";
+import { TanyaJawabScreen } from "../screens/TanyaJawabScreen";
+import { TindakanScreen } from "../screens/TindakanScreen";
+import { WelcomeScreen } from "../screens/WelcomeScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,6 +43,7 @@ function MainTabs() {
           backgroundColor: "#FFFFFF",
           borderTopColor: "#E0E0E0",
           borderTopWidth: 1,
+          paddingBottom: 40,
         },
         tabBarLabelStyle: {
           fontSize: 11,
@@ -129,6 +133,30 @@ export default function AppNavigator() {
         />
 
         {/* Detail Screens (Stack screens that overlay the tabs) */}
+        <Stack.Screen
+          name="FormCatatan"
+          component={FormCatatanScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="FormPengingat"
+          component={FormPengingatScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="DetailPengingat"
+          component={DetailPengingatScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+
         <Stack.Screen
           name="CekKondisi"
           component={CekKondisiScreen}

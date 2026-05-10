@@ -1,7 +1,8 @@
-import { BackgroundWrapper } from "../../components/BackgroundWrapper";
 import { Feather } from "@expo/vector-icons";
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import { CustomHeader } from "../../components/CustomHeader";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { BackgroundWrapper } from "../../components/BackgroundWrapper";
+import { HeaderSafeArea } from "../../components/HeaderSafeArea";
 
 interface MuntahScreenProps {
   navigation: any;
@@ -148,99 +149,104 @@ export const MuntahScreen = ({ navigation }: MuntahScreenProps) => {
 
   return (
     <BackgroundWrapper>
-    <SafeAreaView style={styles.container}>
-      <CustomHeader
-        title="Muntah terus - menerus"
-        showBack
-        onBackPress={() => navigation.goBack()}
-      />
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <View style={styles.mainCard}>
-          <View style={styles.cardTopLine} />
-          <View style={styles.cardContent}>
-            {/* Definisi */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Definisi</Text>
-              <Text style={styles.descriptionText}>
-                Balita memuntahkan semua makanan dan minuman yang diberikan,
-                sehingga tidak ada yang masuk ke dalam tubuh.
-              </Text>
+      <SafeAreaView style={styles.container}>
+        <HeaderSafeArea
+          title="Muntah terus - menerus"
+          showBack
+          onBackPress={() => navigation.goBack()}
+        />
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.mainCard}>
+            <View style={styles.cardTopLine} />
+            <View style={styles.cardContent}>
+              {/* Definisi */}
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Definisi</Text>
+                <Text style={styles.descriptionText}>
+                  Balita memuntahkan semua makanan dan minuman yang diberikan,
+                  sehingga tidak ada yang masuk ke dalam tubuh.
+                </Text>
 
-              <View style={styles.warningBox}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 4,
-                  }}
-                >
-                  <Feather name="alert-triangle" size={14} color="#FF6B35" />
-                  <Text
-                    style={[
-                      styles.warningTitle,
-                      { marginBottom: 0, marginLeft: 6 },
-                    ]}
+                <View style={styles.warningBox}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: 4,
+                    }}
                   >
-                    Apa Berbahaya?
+                    <Feather name="alert-triangle" size={14} color="#FF6B35" />
+                    <Text
+                      style={[
+                        styles.warningTitle,
+                        { marginBottom: 0, marginLeft: 6 },
+                      ]}
+                    >
+                      Apa Berbahaya?
+                    </Text>
+                  </View>
+                  <Text style={styles.warningText}>
+                    Kondisi ini dapat menyebabkan dehidrasi dan kekurangan
+                    nutrisi, serta bisa menjadi tanda penyakit serius.
                   </Text>
                 </View>
-                <Text style={styles.warningText}>
-                  Kondisi ini dapat menyebabkan dehidrasi dan kekurangan
-                  nutrisi, serta bisa menjadi tanda penyakit serius.
-                </Text>
               </View>
-            </View>
 
-            {/* Tanda Anak Mulai Muntah */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Tanda Anak Mulai Muntah</Text>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>Bibir dan mulut kering</Text>
+              {/* Tanda Anak Mulai Muntah */}
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Tanda Anak Mulai Muntah</Text>
+                <View style={styles.bulletPoint}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.bulletText}>Bibir dan mulut kering</Text>
+                </View>
+                <View style={styles.bulletPoint}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.bulletText}>Jarang buang air kecil</Text>
+                </View>
+                <View style={styles.bulletPoint}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.bulletText}>Mata cekung</Text>
+                </View>
+                <View style={styles.bulletPoint}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.bulletText}>
+                    Anak tampak sangat lemas
+                  </Text>
+                </View>
               </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>Jarang buang air kecil</Text>
-              </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>Mata cekung</Text>
-              </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>Anak tampak sangat lemas</Text>
-              </View>
-            </View>
 
-            {/* Tanda yang Perlu Diperhatikan */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>
-                Tanda yang Perlu Diperhatikan
-              </Text>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>
-                  Setiap makan atau minum muntah
+              {/* Tanda yang Perlu Diperhatikan */}
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>
+                  Tanda yang Perlu Diperhatikan
                 </Text>
+                <View style={styles.bulletPoint}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.bulletText}>
+                    Setiap makan atau minum muntah
+                  </Text>
+                </View>
+                <View style={styles.bulletPoint}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.bulletText}>Muntah berlangsung kali</Text>
+                </View>
+                <View style={styles.bulletPoint}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.bulletText}>Anak tampak lemas</Text>
+                </View>
+                <View style={styles.bulletPoint}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.bulletText}>
+                    Tidak mau makan atau minum
+                  </Text>
+                </View>
               </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>Muntah berlangsung kali</Text>
-              </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>Anak tampak lemas</Text>
-              </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>
-                  Tidak mau makan atau minum
-                </Text>
-              </View>
-            </View>
 
-            {/* Perhatian */}
-            {/* <View style={styles.section}>
+              {/* Perhatian */}
+              {/* <View style={styles.section}>
               <View
                 style={{
                   flexDirection: "row",
@@ -319,11 +325,11 @@ export const MuntahScreen = ({ navigation }: MuntahScreenProps) => {
                 </View>
               </View>
             </View> */}
+            </View>
+            <View style={styles.cardBottomLine} />
           </View>
-          <View style={styles.cardBottomLine} />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
     </BackgroundWrapper>
   );
 };

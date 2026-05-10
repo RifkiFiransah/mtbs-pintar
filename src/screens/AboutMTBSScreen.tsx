@@ -1,7 +1,6 @@
 import {
   Image,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -188,49 +187,49 @@ export const AboutMTBSScreen = ({ navigation }: AboutMTBSScreenProps) => {
 
   return (
     <BackgroundWrapper>
-      <SafeAreaView style={styles.container}>
-        <Image
-          source={require("../../assets/images/bg/bg-1.png")}
-          style={styles.backgroundImage}
-        />
+      {/* <SafeAreaView style={styles.container}> */}
+      <Image
+        source={require("../../assets/images/bg/bg-1.png")}
+        style={styles.backgroundImage}
+      />
 
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          bounces={false}
-          style={{ flex: 1 }}
-        >
-          {/* Top Wave Section */}
-          <View style={styles.topWave}>
-            <View style={styles.logoContainer}>
-              <Image
-                source={require("../../assets/images/logos/ubhi.png")}
-                style={styles.logo}
-              />
-              <Text style={styles.ubhiText}>UBHI</Text>
-            </View>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        bounces={false}
+        style={{ flex: 1 }}
+      >
+        {/* Top Wave Section */}
+        <View style={styles.topWave}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require("../../assets/images/logos/ubhi.png")}
+              style={styles.logo}
+            />
+            <Text style={styles.ubhiText}>UBHI</Text>
           </View>
+        </View>
 
-          {/* Content Section */}
-          <View style={styles.contentWrapper}>
-            <View style={styles.noteCard}>
-              {/* Background Image */}
-              <Image
-                source={require("../../assets/images/bg/bg-detail-text.png")}
-                style={styles.noteCardBackground}
-              />
+        {/* Content Section */}
+        <View style={styles.contentWrapper}>
+          <View style={styles.noteCard}>
+            {/* Background Image */}
+            <Image
+              source={require("../../assets/images/bg/bg-detail-text.png")}
+              style={styles.noteCardBackground}
+            />
 
-              {/* Ribbon */}
-              {/* <View style={styles.ribbon} /> */}
+            {/* Ribbon */}
+            {/* <View style={styles.ribbon} /> */}
 
-              {/* Spiral Holes Left */}
-              {/* <View style={styles.spiralHolesLeft}>
+            {/* Spiral Holes Left */}
+            {/* <View style={styles.spiralHolesLeft}>
               {[...Array(12)].map((_, i) => (
                 <View key={i} style={styles.spiralHole} />
               ))}
             </View> */}
 
-              {/* Spiral Holes Right */}
-              {/* <View
+            {/* Spiral Holes Right */}
+            {/* <View
               style={[
                 styles.spiralHolesLeft,
                 { left: "auto", right: -15, alignItems: "center" },
@@ -241,51 +240,50 @@ export const AboutMTBSScreen = ({ navigation }: AboutMTBSScreenProps) => {
               ))}
             </View> */}
 
-              {/* Content */}
-              <View style={styles.noteCardContent}>
-                <Text style={styles.contentTitle}>Tentang MTBS-Pintar</Text>
+            {/* Content */}
+            <View style={styles.noteCardContent}>
+              <Text style={styles.contentTitle}>Tentang MTBS-Pintar</Text>
 
-                <Text style={styles.contentText}>
-                  MTBS-Pintar adalah aplikasi edukasi kesehatan untuk membantu
-                  ibu mengenali tanda bahaya pada balita sejak dini. Aplikasi
-                  ini menggunakan pendekatan Manajemen Terpadu Balita Sakit
-                  (MTBS).
-                </Text>
+              <Text style={styles.contentText}>
+                MTBS-Pintar adalah aplikasi edukasi kesehatan untuk membantu ibu
+                mengenali tanda bahaya pada balita sejak dini. Aplikasi ini
+                menggunakan pendekatan Manajemen Terpadu Balita Sakit (MTBS).
+              </Text>
 
-                <Text style={styles.contentText}>
-                  Dengan MTBS-Pintar, ibu dapat belajar cara mendeteksi kondisi
-                  berbahaya dan mengetahui langkah penanganan awal secara cepat
-                  dan tepat.
-                </Text>
+              <Text style={styles.contentText}>
+                Dengan MTBS-Pintar, ibu dapat belajar cara mendeteksi kondisi
+                berbahaya dan mengetahui langkah penanganan awal secara cepat
+                dan tepat.
+              </Text>
 
-                <Text style={styles.sectionTitle}>Tujuan</Text>
+              <Text style={styles.sectionTitle}>Tujuan</Text>
 
-                <Text style={styles.bulletPoint}>
-                  <Text style={styles.bulletDot}>•</Text>
-                  Membantu deteksi dini tanda bahaya balita
-                </Text>
+              <Text style={styles.bulletPoint}>
+                <Text style={styles.bulletDot}>•</Text>
+                Membantu deteksi dini tanda bahaya balita
+              </Text>
 
-                <Text style={styles.bulletPoint}>
-                  <Text style={styles.bulletDot}>•</Text>
-                  Meningkatkan kepercayaan diri ibu
-                </Text>
+              <Text style={styles.bulletPoint}>
+                <Text style={styles.bulletDot}>•</Text>
+                Meningkatkan kepercayaan diri ibu
+              </Text>
 
-                <Text style={styles.bulletPoint}>
-                  <Text style={styles.bulletDot}>•</Text>
-                  Mendukung penanganan yang cepat dan tepat
-                </Text>
-              </View>
+              <Text style={styles.bulletPoint}>
+                <Text style={styles.bulletDot}>•</Text>
+                Mendukung penanganan yang cepat dan tepat
+              </Text>
             </View>
           </View>
+        </View>
 
-          {/* Footer */}
-          <View style={styles.footer}>
-            <Pressable style={styles.backButton} onPress={handleBack}>
-              <Text style={styles.backButtonText}>Kembali</Text>
-            </Pressable>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+        {/* Footer */}
+        <View style={styles.footer}>
+          <Pressable style={styles.backButton} onPress={handleBack}>
+            <Text style={styles.backButtonText}>Kembali</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+      {/* </SafeAreaView> */}
     </BackgroundWrapper>
   );
 };

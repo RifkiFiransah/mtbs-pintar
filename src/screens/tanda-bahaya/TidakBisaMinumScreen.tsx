@@ -1,14 +1,8 @@
-import { BackgroundWrapper } from "../../components/BackgroundWrapper";
 import { Feather } from "@expo/vector-icons";
-import {
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import { CustomHeader } from "../../components/CustomHeader";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { BackgroundWrapper } from "../../components/BackgroundWrapper";
+import { HeaderSafeArea } from "../../components/HeaderSafeArea";
 
 interface TidakBisaMinumScreenProps {
   navigation: any;
@@ -250,70 +244,73 @@ export const TidakBisaMinumScreen = ({
 
   return (
     <BackgroundWrapper>
-    <SafeAreaView style={styles.container}>
-      <CustomHeader
-        title="Tidak bisa minum atau menyusu"
-        showBack
-        onBackPress={() => navigation.goBack()}
-      />
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <View style={styles.mainCard}>
-          <View style={styles.cardTopLine} />
-          <View style={styles.cardContent}>
-            {/* Definisi */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Definisi</Text>
-              <Text style={styles.descriptionText}>
-                Balita tidak mau minum, menyusu, atau sangat sulit diberi cairan
-                meskipun sudah dicoba.
-              </Text>
-              <View style={styles.warningBox}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 4,
-                  }}
-                >
-                  <Feather name="alert-triangle" size={14} color="#FF6B35" />
-                  <Text
-                    style={[
-                      styles.warningTitle,
-                      { marginBottom: 0, marginLeft: 6 },
-                    ]}
+      <SafeAreaView style={styles.container}>
+        <HeaderSafeArea
+          title="Tidak bisa minum atau menyusu"
+          showBack
+          onBackPress={() => navigation.goBack()}
+        />
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.mainCard}>
+            <View style={styles.cardTopLine} />
+            <View style={styles.cardContent}>
+              {/* Definisi */}
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Definisi</Text>
+                <Text style={styles.descriptionText}>
+                  Balita tidak mau minum, menyusu, atau sangat sulit diberi
+                  cairan meskipun sudah dicoba.
+                </Text>
+                <View style={styles.warningBox}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: 4,
+                    }}
                   >
-                    Apa Berbahaya?
+                    <Feather name="alert-triangle" size={14} color="#FF6B35" />
+                    <Text
+                      style={[
+                        styles.warningTitle,
+                        { marginBottom: 0, marginLeft: 6 },
+                      ]}
+                    >
+                      Apa Berbahaya?
+                    </Text>
+                  </View>
+                  <Text style={styles.warningText}>
+                    Kondisi ini dapat menyebabkan dehidrasi dan menandakan anak
+                    sedang sakit serius.
                   </Text>
                 </View>
-                <Text style={styles.warningText}>
-                  Kondisi ini dapat menyebabkan dehidrasi dan menandakan anak
-                  sedang sakit serius.
-                </Text>
-              </View>
-            </View>
-
-            {/* Tanda yang Perlu Diperhatikan */}
-            <View style={styles.section}>
-              <View style={styles.dehidrasiHeader}>
-                <Text style={styles.dehidrasiTitle}>
-                  TANDA ANAK MULAI DEHIDRASI
-                </Text>
-                <View style={styles.contohIlustrasiBadge}>
-                  <View style={styles.redDot} />
-                  <Text style={styles.contohText}>Contoh Ilustrasi.</Text>
-                </View>
               </View>
 
-              {dehidrasiSigns.map((sign) => (
-                <View key={sign.id} style={styles.signCard}>
-                  <Image source={sign.image} style={styles.signImage} />
-                  <View style={styles.signContent}>
-                    <Text style={styles.signTitle}>{sign.title}</Text>
+              {/* Tanda yang Perlu Diperhatikan */}
+              <View style={styles.section}>
+                <View style={styles.dehidrasiHeader}>
+                  <Text style={styles.dehidrasiTitle}>
+                    TANDA ANAK MULAI DEHIDRASI
+                  </Text>
+                  <View style={styles.contohIlustrasiBadge}>
+                    <View style={styles.redDot} />
+                    <Text style={styles.contohText}>Contoh Ilustrasi.</Text>
                   </View>
                 </View>
-              ))}
 
-              {/* <View style={styles.cautionBox}>
+                {dehidrasiSigns.map((sign) => (
+                  <View key={sign.id} style={styles.signCard}>
+                    <Image source={sign.image} style={styles.signImage} />
+                    <View style={styles.signContent}>
+                      <Text style={styles.signTitle}>{sign.title}</Text>
+                    </View>
+                  </View>
+                ))}
+
+                {/* <View style={styles.cautionBox}>
                 <View
                   style={{
                     flexDirection: "row",
@@ -350,55 +347,55 @@ export const TidakBisaMinumScreen = ({
                   </Text>
                 </View>
               </View> */}
-            </View>
+              </View>
 
-            {/* Perhatian */}
-            <View style={styles.section}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 12,
-                  paddingBottom: 8,
-                  borderBottomWidth: 2,
-                  borderBottomColor: "#2B9FFF",
-                }}
-              >
-                <Feather name="alert-triangle" size={18} color="#1E3A8A" />
-                <Text
-                  style={[
-                    styles.sectionTitle,
-                    {
-                      marginBottom: 0,
-                      paddingBottom: 0,
-                      borderBottomWidth: 0,
-                      marginLeft: 8,
-                    },
-                  ]}
+              {/* Perhatian */}
+              <View style={styles.section}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 12,
+                    paddingBottom: 8,
+                    borderBottomWidth: 2,
+                    borderBottomColor: "#2B9FFF",
+                  }}
                 >
-                  Tanda yang perlu diperhatikan
-                </Text>
-              </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>Melolok minum atau ASI</Text>
-              </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>Minum sangat sedikit</Text>
-              </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>Mulut kering</Text>
-              </View>
-              <View style={styles.bulletPoint}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.bulletText}>
-                  Anak tampak lemas atau mengantuk terus
-                </Text>
-              </View>
+                  <Feather name="alert-triangle" size={18} color="#1E3A8A" />
+                  <Text
+                    style={[
+                      styles.sectionTitle,
+                      {
+                        marginBottom: 0,
+                        paddingBottom: 0,
+                        borderBottomWidth: 0,
+                        marginLeft: 8,
+                      },
+                    ]}
+                  >
+                    Tanda yang perlu diperhatikan
+                  </Text>
+                </View>
+                <View style={styles.bulletPoint}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.bulletText}>Melolok minum atau ASI</Text>
+                </View>
+                <View style={styles.bulletPoint}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.bulletText}>Minum sangat sedikit</Text>
+                </View>
+                <View style={styles.bulletPoint}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.bulletText}>Mulut kering</Text>
+                </View>
+                <View style={styles.bulletPoint}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.bulletText}>
+                    Anak tampak lemas atau mengantuk terus
+                  </Text>
+                </View>
 
-              {/* <View style={styles.actionBox}>
+                {/* <View style={styles.actionBox}>
                 <View
                   style={{
                     flexDirection: "row",
@@ -429,12 +426,12 @@ export const TidakBisaMinumScreen = ({
                   </Text>
                 </View>
               </View> */}
+              </View>
             </View>
+            <View style={styles.cardBottomLine} />
           </View>
-          <View style={styles.cardBottomLine} />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
     </BackgroundWrapper>
   );
 };

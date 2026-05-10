@@ -1,14 +1,8 @@
 import { Feather } from "@expo/vector-icons";
-import {
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { BackgroundWrapper } from "../../components/BackgroundWrapper";
-import { CustomHeader } from "../../components/CustomHeader";
+import { HeaderSafeArea } from "../../components/HeaderSafeArea";
 
 interface KejangScreenProps {
   navigation: any;
@@ -245,7 +239,7 @@ export const KejangScreen = ({ navigation }: KejangScreenProps) => {
   return (
     <BackgroundWrapper>
       <SafeAreaView style={styles.container}>
-        <CustomHeader
+        <HeaderSafeArea
           title="Kejang"
           showBack
           onBackPress={() => navigation.goBack()}

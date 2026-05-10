@@ -1,7 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   Image,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -22,6 +21,7 @@ export const BerandaScreen = ({ navigation }: BerandaScreenProps) => {
     container: {
       flex: 1,
       backgroundColor: "transparent",
+      // paddingBottom: 40,
     },
     headerSection: {
       backgroundColor: "#2B9FFF",
@@ -33,11 +33,11 @@ export const BerandaScreen = ({ navigation }: BerandaScreenProps) => {
     },
     logoContainer: {
       alignItems: "center",
-      paddingTop: 30,
+      paddingTop: 45,
     },
     logo: {
-      width: 100,
-      height: 100,
+      width: 90,
+      height: 90,
       resizeMode: "contain",
     },
     headerContent: {
@@ -50,7 +50,7 @@ export const BerandaScreen = ({ navigation }: BerandaScreenProps) => {
       alignItems: "center",
     },
     greeting: {
-      fontSize: 22,
+      fontSize: 20,
       fontWeight: "700",
       color: "#FFFFFF",
       marginBottom: 8,
@@ -59,7 +59,7 @@ export const BerandaScreen = ({ navigation }: BerandaScreenProps) => {
       fontSize: 14,
       color: "#FFFFFF",
       fontWeight: "600",
-      lineHeight: 20,
+      lineHeight: 18,
       textAlign: "center",
     },
     illustration: {
@@ -68,19 +68,22 @@ export const BerandaScreen = ({ navigation }: BerandaScreenProps) => {
     scrollContent: {
       paddingHorizontal: 16,
       paddingVertical: 20,
+      zIndex: 999,
       // paddingBottom: 30,
     },
     menuGrid: {
       flexDirection: "row",
       flexWrap: "wrap",
       justifyContent: "center",
+      height: "100%",
+      zIndex: 999,
       gap: 12,
     },
     menuCardLarge: {
       width: "45%",
       backgroundColor: "#FFFFFF",
-      borderRadius: 20,
-      padding: 16,
+      borderRadius: 15,
+      padding: 10,
       alignItems: "center",
       justifyContent: "center",
       shadowColor: "#000",
@@ -91,6 +94,7 @@ export const BerandaScreen = ({ navigation }: BerandaScreenProps) => {
       minHeight: 140,
       borderWidth: 1,
       borderColor: "#F3F4F6",
+      zIndex: 999,
     },
     iconContainer: {
       width: 56,
@@ -162,62 +166,62 @@ export const BerandaScreen = ({ navigation }: BerandaScreenProps) => {
 
   return (
     <BackgroundWrapper>
-      <SafeAreaView style={styles.container}>
-        <ScrollView
-          bounces={false}
-          showsVerticalScrollIndicator={false}
-          style={styles.container}
-        >
-          {/* Header Section */}
-          <View style={styles.headerSection}>
-            <View style={styles.logoContainer}>
-              <Image
-                source={require("../../assets/images/logos/utama.png")}
-                style={styles.logo}
-              />
-            </View>
-            <View style={styles.headerContent}>
-              <View style={styles.headerText}>
-                <Text style={styles.greeting}>👋 Halo, Ibu</Text>
-                <Text style={styles.subtext}>
-                  Ayo belajar bersama tentang kesehatan balita
-                </Text>
-                <Text style={[styles.subtext, { marginTop: 12 }]}>
-                  Kenali Tanda Bahaya Sejak Dini!!
-                </Text>
-              </View>
+      {/* <SafeAreaView style={styles.container}> */}
+      <ScrollView
+        bounces={false}
+        showsVerticalScrollIndicator={false}
+        style={styles.container}
+      >
+        {/* Header Section */}
+        <View style={styles.headerSection}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require("../../assets/images/logos/utama.png")}
+              style={styles.logo}
+            />
+          </View>
+          <View style={styles.headerContent}>
+            <View style={styles.headerText}>
+              <Text style={styles.greeting}>👋 Halo, Ibu</Text>
+              <Text style={styles.subtext}>
+                Ayo belajar bersama tentang kesehatan balita
+              </Text>
+              <Text style={[styles.subtext, { marginTop: 12 }]}>
+                Kenali Tanda Bahaya Sejak Dini!!
+              </Text>
             </View>
           </View>
+        </View>
 
-          {/* Menu Grid */}
-          <View style={styles.scrollContent}>
-            <View style={styles.menuGrid}>
-              {menuItems.map((item, index) => (
-                <TouchableOpacity
-                  key={item.id}
-                  style={styles.menuCardLarge}
-                  onPress={item.onPress}
-                  activeOpacity={0.7}
+        {/* Menu Grid */}
+        <View style={styles.scrollContent}>
+          <View style={styles.menuGrid}>
+            {menuItems.map((item, index) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.menuCardLarge}
+                onPress={item.onPress}
+                activeOpacity={0.7}
+              >
+                <View
+                  style={[
+                    styles.iconContainer,
+                    { backgroundColor: item.bgColor },
+                  ]}
                 >
-                  <View
-                    style={[
-                      styles.iconContainer,
-                      { backgroundColor: item.bgColor },
-                    ]}
-                  >
-                    <MaterialIcons
-                      name={item.icon as any}
-                      size={28}
-                      color={item.iconColor}
-                    />
-                  </View>
-                  <Text style={styles.menuTitle}>{item.title}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+                  <MaterialIcons
+                    name={item.icon as any}
+                    size={28}
+                    color={item.iconColor}
+                  />
+                </View>
+                <Text style={styles.menuTitle}>{item.title}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
-        </ScrollView>
-      </SafeAreaView>
+        </View>
+      </ScrollView>
+      {/* </SafeAreaView> */}
     </BackgroundWrapper>
   );
 };
