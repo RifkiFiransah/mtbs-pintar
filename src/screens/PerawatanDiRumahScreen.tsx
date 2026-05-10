@@ -4,7 +4,7 @@ import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackgroundWrapper } from "../components/BackgroundWrapper";
 
-import { CustomHeader } from "../components/CustomHeader";
+import { HeaderSafeArea } from "../components/HeaderSafeArea";
 
 interface PerawatanDiRumahScreenProps {
   navigation: any;
@@ -143,7 +143,7 @@ export const PerawatanDiRumahScreen = ({
   return (
     <BackgroundWrapper>
       <SafeAreaView style={styles.container}>
-        <CustomHeader
+        <HeaderSafeArea
           title="Perawatan di Rumah"
           showBack
           onBackPress={() => navigation.goBack()}

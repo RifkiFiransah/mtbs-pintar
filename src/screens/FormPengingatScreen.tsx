@@ -11,8 +11,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { BackgroundWrapper } from "../components/BackgroundWrapper";
-import { CustomHeader } from "../components/CustomHeader";
+import { HeaderSafeArea } from "../components/HeaderSafeArea";
 import { addReminder } from "../database/db";
 import { scheduleReminderNotification } from "../utils/notifications";
 
@@ -87,102 +88,104 @@ export const FormPengingatScreen = ({ navigation }: any) => {
 
   return (
     <BackgroundWrapper>
-      {/* <SafeAreaView style={styles.container}> */}
-      <CustomHeader
-        title="Tambah Pengingat"
-        showBack={true}
-        onBackPress={() => navigation.goBack()}
-      />
-      <ScrollView style={styles.content}>
-        <View style={styles.card}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Judul Pengingat *</Text>
-            <View style={styles.optionsContainer}>
-              {TITLE_OPTIONS.map((opt) => (
-                <TouchableOpacity
-                  key={opt}
-                  style={[
-                    styles.optionChip,
-                    title === opt && styles.optionChipActive,
-                  ]}
-                  onPress={() => setTitle(opt)}
-                >
-                  <Text
+      <SafeAreaView style={styles.container}>
+        <HeaderSafeArea
+          title="Tambah Pengingat"
+          showBack={true}
+          onBackPress={() => navigation.goBack()}
+        />
+        <ScrollView style={styles.content}>
+          <View style={styles.card}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Judul Pengingat *</Text>
+              <View style={styles.optionsContainer}>
+                {TITLE_OPTIONS.map((opt) => (
+                  <TouchableOpacity
+                    key={opt}
                     style={[
-                      styles.optionChipText,
-                      title === opt && styles.optionChipTextActive,
+                      styles.optionChip,
+                      title === opt && styles.optionChipActive,
                     ]}
+                    onPress={() => setTitle(opt)}
                   >
-                    {opt}
+                    <Text
+                      style={[
+                        styles.optionChipText,
+                        title === opt && styles.optionChipTextActive,
+                      ]}
+                    >
+                      {opt}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Deskripsi (Opsional)</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Misal: Paracetamol setelah makan"
+                value={description}
+                onChangeText={setDescription}
+              />
+            </View>
+
+            <View style={styles.row}>
+              <View
+                style={[styles.inputContainer, { flex: 1, marginRight: 8 }]}
+              >
+                <Text style={styles.label}>Tanggal</Text>
+                <TouchableOpacity
+                  style={styles.pickerBox}
+                  onPress={() => setShowDatePicker(true)}
+                >
+                  <Ionicons name="calendar-outline" size={20} color="#1E88E5" />
+                  <Text style={styles.pickerText}>
+                    {date.toLocaleDateString("id-ID")}
                   </Text>
                 </TouchableOpacity>
-              ))}
+                {showDatePicker && (
+                  <DateTimePicker
+                    value={date}
+                    mode="date"
+                    display="default"
+                    onChange={handleDateChange}
+                  />
+                )}
+              </View>
+
+              <View style={[styles.inputContainer, { flex: 1, marginLeft: 8 }]}>
+                <Text style={styles.label}>Waktu</Text>
+                <TouchableOpacity
+                  style={styles.pickerBox}
+                  onPress={() => setShowTimePicker(true)}
+                >
+                  <Ionicons name="time-outline" size={20} color="#1E88E5" />
+                  <Text style={styles.pickerText}>
+                    {time.toLocaleTimeString("id-ID", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </Text>
+                </TouchableOpacity>
+                {showTimePicker && (
+                  <DateTimePicker
+                    value={time}
+                    mode="time"
+                    display="default"
+                    onChange={handleTimeChange}
+                  />
+                )}
+              </View>
             </View>
+
+            <TouchableOpacity style={styles.saveButton} onPress={onSave}>
+              <Text style={styles.saveButtonText}>Simpan Pengingat</Text>
+            </TouchableOpacity>
           </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Deskripsi (Opsional)</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Misal: Paracetamol setelah makan"
-              value={description}
-              onChangeText={setDescription}
-            />
-          </View>
-
-          <View style={styles.row}>
-            <View style={[styles.inputContainer, { flex: 1, marginRight: 8 }]}>
-              <Text style={styles.label}>Tanggal</Text>
-              <TouchableOpacity
-                style={styles.pickerBox}
-                onPress={() => setShowDatePicker(true)}
-              >
-                <Ionicons name="calendar-outline" size={20} color="#1E88E5" />
-                <Text style={styles.pickerText}>
-                  {date.toLocaleDateString("id-ID")}
-                </Text>
-              </TouchableOpacity>
-              {showDatePicker && (
-                <DateTimePicker
-                  value={date}
-                  mode="date"
-                  display="default"
-                  onChange={handleDateChange}
-                />
-              )}
-            </View>
-
-            <View style={[styles.inputContainer, { flex: 1, marginLeft: 8 }]}>
-              <Text style={styles.label}>Waktu</Text>
-              <TouchableOpacity
-                style={styles.pickerBox}
-                onPress={() => setShowTimePicker(true)}
-              >
-                <Ionicons name="time-outline" size={20} color="#1E88E5" />
-                <Text style={styles.pickerText}>
-                  {time.toLocaleTimeString("id-ID", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </Text>
-              </TouchableOpacity>
-              {showTimePicker && (
-                <DateTimePicker
-                  value={time}
-                  mode="time"
-                  display="default"
-                  onChange={handleTimeChange}
-                />
-              )}
-            </View>
-          </View>
-
-          <TouchableOpacity style={styles.saveButton} onPress={onSave}>
-            <Text style={styles.saveButtonText}>Simpan Pengingat</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-      {/* </SafeAreaView> */}
+        </ScrollView>
+      </SafeAreaView>
     </BackgroundWrapper>
   );
 };

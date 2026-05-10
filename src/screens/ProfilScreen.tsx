@@ -1,8 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Image,
   Modal,
   ScrollView,
   StyleSheet,
@@ -34,10 +36,12 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
   const [motherName, setMotherName] = useState("");
   const [motherAge, setMotherAge] = useState("");
   const [motherPhone, setMotherPhone] = useState("");
+  const [motherFotoUri, setMotherFotoUri] = useState<string | null>(null);
 
   const [childName, setChildName] = useState("");
   const [childAge, setChildAge] = useState("");
   const [childGender, setChildGender] = useState("");
+  const [childFotoUri, setChildFotoUri] = useState<string | null>(null);
 
   const loadData = async () => {
     const mothers = await getMothers();
@@ -49,6 +53,7 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
       setMotherName(mother.name);
       setMotherAge(mother.age);
       setMotherPhone(mother.phone);
+      setMotherFotoUri(mother.foto_uri || null);
     }
 
     if (children.length > 0) {
@@ -57,6 +62,7 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
       setChildName(child.name);
       setChildAge(child.date_of_birth);
       setChildGender(child.gender);
+      setChildFotoUri(child.foto_uri || null);
     }
   };
 
@@ -69,7 +75,7 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
   const handleSave = async () => {
     try {
       if (motherData) {
-        await updateMother(motherData.id, motherName, motherAge, motherPhone);
+        await updateMother(motherData.id, motherName, motherAge, motherPhone, motherFotoUri || undefined);
       }
       if (childData) {
         await updateChild(
@@ -78,6 +84,7 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
           childAge,
           childGender,
           childData.blood_type,
+          childFotoUri || undefined
         );
       }
       setModalVisible(false);
@@ -105,6 +112,30 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
     ]);
   };
 
+  const pickMotherImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setMotherFotoUri(result.assets[0].uri);
+    }
+  };
+
+  const pickChildImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setChildFotoUri(result.assets[0].uri);
+    }
+  };
+
   return (
     <BackgroundWrapper>
       {/* <SafeAreaView style={styles.container}> */}
@@ -125,7 +156,11 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
         <Text style={styles.sectionTitle}>Data Ibu</Text>
         <View style={[styles.card, styles.profileCard]}>
           <View style={styles.avatarContainer}>
-            <Ionicons name="person" size={40} color="#8C9EFF" />
+            {motherData?.foto_uri ? (
+              <Image source={{ uri: motherData.foto_uri }} style={styles.avatarImage} />
+            ) : (
+              <Ionicons name="person" size={40} color="#8C9EFF" />
+            )}
           </View>
           <View style={styles.profileInfo}>
             <View style={styles.infoRow}>
@@ -148,7 +183,11 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
           <View
             style={[styles.avatarContainer, { backgroundColor: "#B3E5FC" }]}
           >
-            <Ionicons name="happy" size={40} color="#4FC3F7" />
+            {childData?.foto_uri ? (
+              <Image source={{ uri: childData.foto_uri }} style={styles.avatarImage} />
+            ) : (
+              <Ionicons name="happy" size={40} color="#4FC3F7" />
+            )}
           </View>
           <View style={styles.profileInfo}>
             <View style={styles.infoRow}>
@@ -260,6 +299,19 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
 
             <ScrollView style={styles.modalScroll}>
               <Text style={styles.formSectionTitle}>Data Ibu</Text>
+              <View style={styles.imagePickerContainer}>
+                <TouchableOpacity onPress={pickMotherImage} style={styles.imagePickerAvatar}>
+                  {motherFotoUri ? (
+                    <Image source={{ uri: motherFotoUri }} style={styles.avatarImage} />
+                  ) : (
+                    <Ionicons name="person" size={40} color="#8C9EFF" />
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={pickMotherImage}>
+                  <Text style={styles.changePhotoText}>Ubah Foto Ibu (Opsional)</Text>
+                </TouchableOpacity>
+              </View>
+
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>Nama Ibu</Text>
                 <TextInput
@@ -290,6 +342,19 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
               </View>
 
               <Text style={styles.formSectionTitle}>Data Anak</Text>
+              <View style={styles.imagePickerContainer}>
+                <TouchableOpacity onPress={pickChildImage} style={[styles.imagePickerAvatar, { backgroundColor: "#B3E5FC" }]}>
+                  {childFotoUri ? (
+                    <Image source={{ uri: childFotoUri }} style={styles.avatarImage} />
+                  ) : (
+                    <Ionicons name="happy" size={40} color="#4FC3F7" />
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={pickChildImage}>
+                  <Text style={styles.changePhotoText}>Ubah Foto Anak (Opsional)</Text>
+                </TouchableOpacity>
+              </View>
+
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>Nama Anak</Text>
                 <TextInput
@@ -378,6 +443,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: 16,
+    overflow: "hidden",
+  },
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   profileInfo: {
     flex: 1,
@@ -485,5 +556,25 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
+  },
+  imagePickerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  imagePickerAvatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#E8EAF6",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 16,
+    overflow: "hidden",
+  },
+  changePhotoText: {
+    color: "#1E88E5",
+    fontSize: 14,
+    fontWeight: "500",
   },
 });

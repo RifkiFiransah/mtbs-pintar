@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import React, { useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import {
   Platform,
   ScrollView,
@@ -11,17 +12,33 @@ import {
 } from "react-native";
 import { BackgroundWrapper } from "../components/BackgroundWrapper";
 import { CustomHeader } from "../components/CustomHeader";
+import { CatatanRow, getCatatan } from "../database/db";
 
 interface CatatanScreenProps {
   navigation: any;
 }
 
 export const CatatanScreen = ({ navigation }: CatatanScreenProps) => {
+  const isFocused = useIsFocused();
   const [activeTab, setActiveTab] = useState("Riwayat Cek");
+
+  // State untuk data catatan
+  const [catatanList, setCatatanList] = useState<CatatanRow[]>([]);
 
   // State untuk filter kalender
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchCatatan();
+    }
+  }, [isFocused]);
+
+  const fetchCatatan = async () => {
+    const data = await getCatatan();
+    setCatatanList(data);
+  };
 
   const handleDateChange = (event: any, date?: Date) => {
     setShowDatePicker(Platform.OS === "ios");
@@ -36,68 +53,32 @@ export const CatatanScreen = ({ navigation }: CatatanScreenProps) => {
 
   const tabs = ["Riwayat Cek", "Keluhan", "Pemeriksaan"];
 
-  const riwayatData = [
-    {
-      date: "20 Mei 2024",
-      time: "09.30",
-      status: "Normal",
-      statusColor: "#E8F5E9",
-      statusTextColor: "#4CAF50",
-      details: [
-        { label: "Suhu tubuh", value: "36,7 °C", icon: "thermometer-outline" },
-        { label: "Nafsu makan", value: "Baik", icon: "restaurant-outline" },
-        { label: "Muntah", value: "Tidak ada", icon: "warning-outline" },
-        { label: "Rewel", value: "Tidak ada", icon: "water-outline" },
-        { label: "Batuk", value: "Ringan", icon: "medkit-outline" },
-      ],
-    },
-    {
-      date: "18 Mei 2024",
-      time: "10.15",
-      status: "Normal",
-      statusColor: "#E8F5E9",
-      statusTextColor: "#4CAF50",
-      details: [
-        { label: "Suhu tubuh", value: "36,6 °C", icon: "thermometer-outline" },
-        { label: "Nafsu makan", value: "Baik", icon: "restaurant-outline" },
-        { label: "Muntah", value: "Tidak ada", icon: "warning-outline" },
-        { label: "Lemes", value: "Tidak ada", icon: "water-outline" },
-        { label: "Batuk", value: "Tidak ada", icon: "medkit-outline" },
-      ],
-    },
-    {
-      date: "15 Mei 2024",
-      time: "08.45",
-      status: "Perlu Perhatian",
-      statusColor: "#FFF3E0",
-      statusTextColor: "#FF9800",
-      details: [
-        { label: "Suhu tubuh", value: "37,8 °C", icon: "thermometer-outline" },
-        { label: "Nafsu makan", value: "Kurang", icon: "restaurant-outline" },
-        { label: "Lemes", value: "Ada", icon: "water-outline" },
-      ],
-    },
-  ];
-
   const getFilteredData = () => {
-    let filtered = riwayatData;
+    let filtered = catatanList;
     if (selectedDate) {
-      const formattedFilterDate = selectedDate.toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-      // Memfilter dengan asumsi format di hardcode text mirip, pada real system pakailah datetime format ISO.
+      const formattedFilterDate = selectedDate.toISOString().split("T")[0];
       filtered = filtered.filter(
-        (item) =>
-          item.date === formattedFilterDate ||
-          item.date.includes(selectedDate.getDate().toString()),
+        (item) => item.tanggal_pemeriksaan === formattedFilterDate,
       );
     }
     return filtered;
   };
 
   const dataToDisplay = getFilteredData();
+
+  const getStatusColor = (status: string | undefined) => {
+    if (status === "Normal") return "#E8F5E9";
+    if (status === "Perlu Perhatian") return "#FFF3E0";
+    if (status === "Bahaya") return "#FFEBEE";
+    return "#E8F5E9"; // default
+  };
+
+  const getStatusTextColor = (status: string | undefined) => {
+    if (status === "Normal") return "#4CAF50";
+    if (status === "Perlu Perhatian") return "#FF9800";
+    if (status === "Bahaya") return "#F44336";
+    return "#4CAF50"; // default
+  };
 
   return (
     <BackgroundWrapper>
@@ -163,66 +144,125 @@ export const CatatanScreen = ({ navigation }: CatatanScreenProps) => {
             </Text>
           </View>
         ) : (
-          dataToDisplay.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.recordCard}
-              onPress={() =>
-                navigation.navigate("FormCatatan", { isDetail: true })
-              }
-            >
-              <View style={styles.recordHeader}>
-                <Text style={styles.recordDateTime}>
-                  <Text style={{ fontWeight: "700", color: "#1E3A8A" }}>
-                    {item.date}
-                  </Text>{" "}
-                  • {item.time}
-                </Text>
-                <View
-                  style={[
-                    styles.statusBadge,
-                    { backgroundColor: item.statusColor },
-                  ]}
-                >
-                  <Text
-                    style={[styles.statusText, { color: item.statusTextColor }]}
-                  >
-                    {item.status}
+          dataToDisplay.map((item, index) => {
+            const dateObj = new Date(item.tanggal_pemeriksaan);
+            const dateFormatted = dateObj.toLocaleDateString("id-ID", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            });
+
+            // Build details
+            const details = [];
+            if (item.suhu_tubuh) {
+              details.push({
+                label: "Suhu tubuh",
+                value: `${item.suhu_tubuh} °C`,
+                icon: "thermometer-outline",
+              });
+            }
+            if (item.nafsu_makan) {
+              details.push({
+                label: "Nafsu makan",
+                value: item.nafsu_makan,
+                icon: "restaurant-outline",
+              });
+            }
+
+            let keluhan: any = {};
+            try {
+              if (item.keluhan_utama) keluhan = JSON.parse(item.keluhan_utama);
+            } catch (e) {
+              console.log(e);
+            }
+
+            if (keluhan["Muntah"]) {
+              details.push({
+                label: "Muntah",
+                value: "Ada",
+                icon: "warning-outline",
+              });
+            }
+            if (keluhan["Rewel"]) {
+              details.push({
+                label: "Rewel",
+                value: "Ada",
+                icon: "water-outline",
+              });
+            }
+            if (keluhan["Batuk"]) {
+              details.push({
+                label: "Batuk",
+                value: "Ada",
+                icon: "medkit-outline",
+              });
+            }
+            if (item.kondisi_anak === "Lemas" || keluhan["Lemes"]) {
+              details.push({
+                label: "Lemes",
+                value: "Ada",
+                icon: "water-outline",
+              });
+            }
+
+            return (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.recordCard}
+                onPress={() =>
+                  navigation.navigate("FormCatatan", {
+                    isDetail: true,
+                    catatanData: item,
+                  })
+                }
+              >
+                <View style={styles.recordHeader}>
+                  <Text style={styles.recordDateTime}>
+                    <Text style={{ fontWeight: "700", color: "#1E3A8A" }}>
+                      {dateFormatted}
+                    </Text>{" "}
+                    • {item.jam_pemeriksaan}
                   </Text>
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      { backgroundColor: getStatusColor(item.status_kondisi) },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.statusText,
+                        { color: getStatusTextColor(item.status_kondisi) },
+                      ]}
+                    >
+                      {item.status_kondisi || "Normal"}
+                    </Text>
+                  </View>
                 </View>
-              </View>
 
-              <View style={styles.divider} />
+                <View style={styles.divider} />
 
-              <View style={styles.detailsContainer}>
-                {item.details.map((detail, idx) => (
-                  <View key={idx} style={styles.detailRow}>
-                    <View style={styles.detailLabelContainer}>
-                      <Ionicons
-                        name={detail.icon as any}
-                        size={14}
-                        color="#999"
-                        style={styles.detailIcon}
-                      />
-                      <Text style={styles.detailLabel}>{detail.label}</Text>
-                    </View>
-                    <View style={styles.detailValueContainer}>
-                      <Text style={styles.detailValue}>{detail.value}</Text>
-                      {/* {(detail.label === "Muntah" ||
-                        detail.label === "Diare") && (
+                <View style={styles.detailsContainer}>
+                  {details.map((detail, idx) => (
+                    <View key={idx} style={styles.detailRow}>
+                      <View style={styles.detailLabelContainer}>
                         <Ionicons
-                          name="chevron-forward"
+                          name={detail.icon as any}
                           size={14}
                           color="#999"
-                          style={{ marginLeft: 4 }}
+                          style={styles.detailIcon}
                         />
-                      )} */}
+                        <Text style={styles.detailLabel}>{detail.label}</Text>
+                      </View>
+                      <View style={styles.detailValueContainer}>
+                        <Text style={styles.detailValue}>{detail.value}</Text>
+                      </View>
                     </View>
-                  </View>
-                ))}
-              </View>
-            </TouchableOpacity>
-          ))
+                  ))}
+                </View>
+              </TouchableOpacity>
+            );
+          })
         )}
       </ScrollView>
       <TouchableOpacity

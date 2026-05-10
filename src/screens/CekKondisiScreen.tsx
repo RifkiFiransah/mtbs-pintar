@@ -1,9 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackgroundWrapper } from "../components/BackgroundWrapper";
-import { CustomHeader } from "../components/CustomHeader";
+import { HeaderSafeArea } from "../components/HeaderSafeArea";
 
 interface CekKondisiScreenProps {
   navigation: any;
@@ -50,7 +57,7 @@ export const CekKondisiScreen = ({ navigation }: CekKondisiScreenProps) => {
   return (
     <BackgroundWrapper>
       <SafeAreaView style={styles.container}>
-        <CustomHeader
+        <HeaderSafeArea
           title="Cek Kondisi Balita"
           showBack
           onBackPress={() => navigation.goBack()}

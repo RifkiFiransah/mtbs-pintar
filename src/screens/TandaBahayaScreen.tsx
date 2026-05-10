@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackgroundWrapper } from "../components/BackgroundWrapper";
-import { CustomHeader } from "../components/CustomHeader";
+import { HeaderSafeArea } from "../components/HeaderSafeArea";
 
 interface TandaBahayaScreenProps {
   navigation: any;
@@ -176,7 +176,7 @@ export const TandaBahayaScreen = ({ navigation }: TandaBahayaScreenProps) => {
   return (
     <BackgroundWrapper>
       <SafeAreaView style={styles.safeArea}>
-        <CustomHeader
+        <HeaderSafeArea
           title="Tanda Bahaya Umum"
           showBack
           onBackPress={() => navigation.goBack()}

@@ -73,6 +73,7 @@ export const initDB = async () => {
           date_of_birth TEXT NOT NULL,
           gender TEXT,
           blood_type TEXT,
+          foto_uri TEXT,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
@@ -84,9 +85,22 @@ export const initDB = async () => {
           name TEXT NOT NULL,
           age TEXT,
           phone TEXT,
+          foto_uri TEXT,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
+
+      // Tambahkan kolom foto_uri jika tabel sudah ada dan belum memiliki kolom tersebut (migrasi ringan)
+      const childrenInfo = await txn.getAllAsync<{name: string}>("PRAGMA table_info(children)");
+      if (!childrenInfo.some(col => col.name === 'foto_uri')) {
+        await txn.execAsync("ALTER TABLE children ADD COLUMN foto_uri TEXT;");
+      }
+
+      const mothersInfo = await txn.getAllAsync<{name: string}>("PRAGMA table_info(mothers)");
+      if (!mothersInfo.some(col => col.name === 'foto_uri')) {
+        await txn.execAsync("ALTER TABLE mothers ADD COLUMN foto_uri TEXT;");
+      }
+
 
       // Seeding profil ibu jika belum ada
       const existingMotherCount = await txn.getFirstAsync<{ count: number }>(
@@ -172,6 +186,82 @@ export const initDB = async () => {
           await txn.runAsync(
             `INSERT INTO reminders (title, description, reminder_date, reminder_time, is_completed) VALUES (?, ?, ?, ?, ?)`,
             [r.title, r.description, r.reminder_date, r.reminder_time, r.is_completed],
+          );
+        }
+      }
+
+      // Seeding catatan awal jika belum ada
+      const existingCatatanCount = await txn.getFirstAsync<{ count: number }>(
+        "SELECT COUNT(*) as count FROM catatan",
+      );
+
+      if (existingCatatanCount && existingCatatanCount.count === 0) {
+        const today = new Date();
+        
+        const date1 = new Date(today);
+        date1.setDate(date1.getDate() - 2);
+        const date1Str = date1.toISOString().split("T")[0];
+
+        const date2 = new Date(today);
+        date2.setDate(date2.getDate() - 1);
+        const date2Str = date2.toISOString().split("T")[0];
+
+        const date3 = new Date(today);
+        const date3Str = date3.toISOString().split("T")[0];
+
+        const dummyCatatan = [
+          {
+            tanggal_pemeriksaan: date1Str,
+            jam_pemeriksaan: "08:45",
+            suhu_tubuh: 37.8,
+            nafsu_makan: "Berkurang",
+            kondisi_anak: "Lemas",
+            napas_anak: "Normal",
+            keluhan_utama: JSON.stringify({ Batuk: false, Pilek: false, Demam: true, Muntah: false, Rewel: false, Lemes: true, Lainnya: false }),
+            tanda_bahaya: JSON.stringify({ Kejang: false, "Tidak sadar": false, "Tidak bisa minum": false, "Muntah terus": false, "Sesak napas": false }),
+            penanganan: JSON.stringify({ "Kompres hangat": true, "Diberi obat": false, "Diberi ASI / cairan": true, "Istirahat yang cukup": true, "Dibawa ke puskesmas / dokter": false, Lainnya: false }),
+            penanganan_lainnya: "",
+            catatan_tambahan: "Anak terlihat lemas dan kurang nafsu makan. Suhu agak tinggi.",
+            status_kondisi: "Perlu Perhatian"
+          },
+          {
+            tanggal_pemeriksaan: date2Str,
+            jam_pemeriksaan: "10:15",
+            suhu_tubuh: 36.6,
+            nafsu_makan: "Baik",
+            kondisi_anak: "Aktif",
+            napas_anak: "Normal",
+            keluhan_utama: JSON.stringify({ Batuk: false, Pilek: false, Demam: false, Muntah: false, Rewel: false, Lemes: false, Lainnya: false }),
+            tanda_bahaya: JSON.stringify({ Kejang: false, "Tidak sadar": false, "Tidak bisa minum": false, "Muntah terus": false, "Sesak napas": false }),
+            penanganan: JSON.stringify({ "Kompres hangat": false, "Diberi obat": false, "Diberi ASI / cairan": true, "Istirahat yang cukup": true, "Dibawa ke puskesmas / dokter": false, Lainnya: false }),
+            penanganan_lainnya: "",
+            catatan_tambahan: "Suhu sudah kembali normal.",
+            status_kondisi: "Normal"
+          },
+          {
+            tanggal_pemeriksaan: date3Str,
+            jam_pemeriksaan: "09:30",
+            suhu_tubuh: 36.7,
+            nafsu_makan: "Baik",
+            kondisi_anak: "Aktif",
+            napas_anak: "Normal",
+            keluhan_utama: JSON.stringify({ Batuk: true, Pilek: false, Demam: false, Muntah: false, Rewel: false, Lemes: false, Lainnya: false }),
+            tanda_bahaya: JSON.stringify({ Kejang: false, "Tidak sadar": false, "Tidak bisa minum": false, "Muntah terus": false, "Sesak napas": false }),
+            penanganan: JSON.stringify({ "Kompres hangat": false, "Diberi obat": false, "Diberi ASI / cairan": true, "Istirahat yang cukup": true, "Dibawa ke puskesmas / dokter": false, Lainnya: false }),
+            penanganan_lainnya: "",
+            catatan_tambahan: "Ada sedikit batuk ringan.",
+            status_kondisi: "Normal"
+          }
+        ];
+
+        for (const c of dummyCatatan) {
+          await txn.runAsync(
+            `INSERT INTO catatan (
+              tanggal_pemeriksaan, jam_pemeriksaan, suhu_tubuh, nafsu_makan, 
+              kondisi_anak, napas_anak, keluhan_utama, tanda_bahaya, 
+              penanganan, penanganan_lainnya, catatan_tambahan, status_kondisi
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [c.tanggal_pemeriksaan, c.jam_pemeriksaan, c.suhu_tubuh, c.nafsu_makan, c.kondisi_anak, c.napas_anak, c.keluhan_utama, c.tanda_bahaya, c.penanganan, c.penanganan_lainnya, c.catatan_tambahan, c.status_kondisi]
           );
         }
       }
@@ -343,11 +433,12 @@ export const updateChild = async (
   date_of_birth: string,
   gender?: string,
   blood_type?: string,
+  foto_uri?: string,
 ) => {
   try {
     await db.runAsync(
-      `UPDATE children SET name = ?, date_of_birth = ?, gender = ?, blood_type = ? WHERE id = ?`,
-      [name, date_of_birth, gender || "", blood_type || "", id]
+      `UPDATE children SET name = ?, date_of_birth = ?, gender = ?, blood_type = ?, foto_uri = ? WHERE id = ?`,
+      [name, date_of_birth, gender || "", blood_type || "", foto_uri || null, id]
     );
     return true;
   } catch (error) {
@@ -372,15 +463,141 @@ export const updateMother = async (
   name: string,
   age: string,
   phone: string,
+  foto_uri?: string,
 ) => {
   try {
     await db.runAsync(
-      `UPDATE mothers SET name = ?, age = ?, phone = ? WHERE id = ?`,
-      [name, age, phone, id]
+      `UPDATE mothers SET name = ?, age = ?, phone = ?, foto_uri = ? WHERE id = ?`,
+      [name, age, phone, foto_uri || null, id]
     );
     return true;
   } catch (error) {
     console.error("Error updating mother:", error);
+    return false;
+  }
+};
+
+// =======================
+// Fungsi CRUD Catatan
+// =======================
+
+export interface CatatanRow {
+  id: number;
+  child_id?: number;
+  tanggal_pemeriksaan: string;
+  jam_pemeriksaan: string;
+  suhu_tubuh?: number;
+  nafsu_makan?: string;
+  kondisi_anak?: string;
+  napas_anak?: string;
+  keluhan_utama?: string; // JSON string
+  tanda_bahaya?: string; // JSON string
+  penanganan?: string; // JSON string
+  penanganan_lainnya?: string;
+  catatan_tambahan?: string;
+  foto_uri?: string;
+  status_kondisi?: string;
+  created_at?: string;
+}
+
+export const getCatatan = async (): Promise<CatatanRow[]> => {
+  try {
+    return await db.getAllAsync(
+      "SELECT * FROM catatan ORDER BY tanggal_pemeriksaan DESC, jam_pemeriksaan DESC"
+    );
+  } catch (error) {
+    console.error("Error fetching catatan:", error);
+    return [];
+  }
+};
+
+export const getCatatanById = async (id: number): Promise<CatatanRow | null> => {
+  try {
+    return await db.getFirstAsync("SELECT * FROM catatan WHERE id = ?", [id]);
+  } catch (error) {
+    console.error("Error fetching catatan by id:", error);
+    return null;
+  }
+};
+
+export const addCatatan = async (
+  tanggal_pemeriksaan: string,
+  jam_pemeriksaan: string,
+  suhu_tubuh?: number,
+  nafsu_makan?: string,
+  kondisi_anak?: string,
+  napas_anak?: string,
+  keluhan_utama?: string,
+  tanda_bahaya?: string,
+  penanganan?: string,
+  penanganan_lainnya?: string,
+  catatan_tambahan?: string,
+  foto_uri?: string,
+  status_kondisi?: string
+) => {
+  try {
+    const result = await db.runAsync(
+      `INSERT INTO catatan (
+        tanggal_pemeriksaan, jam_pemeriksaan, suhu_tubuh, nafsu_makan, 
+        kondisi_anak, napas_anak, keluhan_utama, tanda_bahaya, 
+        penanganan, penanganan_lainnya, catatan_tambahan, foto_uri, status_kondisi
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        tanggal_pemeriksaan, jam_pemeriksaan, suhu_tubuh ?? null, nafsu_makan || null,
+        kondisi_anak || null, napas_anak || null, keluhan_utama || null, tanda_bahaya || null,
+        penanganan || null, penanganan_lainnya || null, catatan_tambahan || null, foto_uri || null, status_kondisi || null
+      ]
+    );
+    return result.lastInsertRowId;
+  } catch (error) {
+    console.error("Error adding catatan:", error);
+    return null;
+  }
+};
+
+export const updateCatatan = async (
+  id: number,
+  tanggal_pemeriksaan: string,
+  jam_pemeriksaan: string,
+  suhu_tubuh?: number,
+  nafsu_makan?: string,
+  kondisi_anak?: string,
+  napas_anak?: string,
+  keluhan_utama?: string,
+  tanda_bahaya?: string,
+  penanganan?: string,
+  penanganan_lainnya?: string,
+  catatan_tambahan?: string,
+  foto_uri?: string,
+  status_kondisi?: string
+) => {
+  try {
+    await db.runAsync(
+      `UPDATE catatan SET 
+        tanggal_pemeriksaan = ?, jam_pemeriksaan = ?, suhu_tubuh = ?, nafsu_makan = ?, 
+        kondisi_anak = ?, napas_anak = ?, keluhan_utama = ?, tanda_bahaya = ?, 
+        penanganan = ?, penanganan_lainnya = ?, catatan_tambahan = ?, foto_uri = ?, status_kondisi = ?
+       WHERE id = ?`,
+      [
+        tanggal_pemeriksaan, jam_pemeriksaan, suhu_tubuh ?? null, nafsu_makan || null,
+        kondisi_anak || null, napas_anak || null, keluhan_utama || null, tanda_bahaya || null,
+        penanganan || null, penanganan_lainnya || null, catatan_tambahan || null, foto_uri || null, status_kondisi || null,
+        id
+      ]
+    );
+    return true;
+  } catch (error) {
+    console.error("Error updating catatan:", error);
+    return false;
+  }
+};
+
+export const deleteCatatan = async (id: number) => {
+  try {
+    await db.runAsync("DELETE FROM catatan WHERE id = ?", [id]);
+    return true;
+  } catch (error) {
+    console.error("Error deleting catatan:", error);
     return false;
   }
 };
