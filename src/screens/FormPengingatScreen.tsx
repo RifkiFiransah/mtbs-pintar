@@ -49,40 +49,55 @@ export const FormPengingatScreen = ({ navigation }: any) => {
       return;
     }
 
-    // Buat objek tanggal dan waktu gabungan untuk trigger notifikasi
-    const triggerDate = new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      time.getHours(),
-      time.getMinutes(),
-    );
+    try {
+      // Buat objek tanggal dan waktu gabungan untuk trigger notifikasi
+      const triggerDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        time.getHours(),
+        time.getMinutes(),
+      );
 
-    // Menyimpan tanggal dan jam dalam bentuk string ke database
-    const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
-    const timeStr = time.toTimeString().substring(0, 5); // HH:MM
+      // Menyimpan tanggal dan jam dalam bentuk string ke database
+      const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
+      const timeStr = time.toTimeString().substring(0, 5); // HH:MM
 
-    // Schedule notifikasi
-    const notificationId = await scheduleReminderNotification(
-      Date.now(),
-      title,
-      description || "Saatnya membuka pengingat!",
-      triggerDate,
-    );
+      // Schedule notifikasi - bisa return null jika gagal
+      const notificationId = await scheduleReminderNotification(
+        Date.now(),
+        title,
+        description || "Saatnya membuka pengingat!",
+        triggerDate,
+      );
 
-    // Save to Database
-    const id = await addReminder(
-      title,
-      description,
-      dateStr,
-      timeStr,
-      notificationId || undefined,
-    );
+      // Save to Database - always proceed even if notification scheduling fails
+      const id = await addReminder(
+        title,
+        description,
+        dateStr,
+        timeStr,
+        notificationId || undefined,
+      );
 
-    if (id) {
-      navigation.goBack();
-    } else {
-      Alert.alert("Error", "Gagal menyimpan pengingat.");
+      if (id) {
+        Alert.alert(
+          "Sukses",
+          notificationId
+            ? "Pengingat berhasil disimpan dengan notifikasi."
+            : "Pengingat berhasil disimpan. (Notifikasi tidak tersedia di Expo Go SDK 53+, gunakan development build untuk notifikasi penuh.)",
+        );
+        navigation.goBack();
+      } else {
+        Alert.alert("Error", "Gagal menyimpan pengingat.");
+      }
+    } catch (error) {
+      console.error("Error saving reminder:", error);
+      Alert.alert(
+        "Error",
+        "Terjadi kesalahan saat menyimpan pengingat: " +
+          (error instanceof Error ? error.message : "Unknown error"),
+      );
     }
   };
 

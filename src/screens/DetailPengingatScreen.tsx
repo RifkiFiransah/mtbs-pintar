@@ -1,7 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
-import { Alert, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackgroundWrapper } from "../components/BackgroundWrapper";
 import { CustomHeader } from "../components/CustomHeader";
@@ -51,46 +60,68 @@ export const DetailPengingatScreen = ({ route, navigation }: any) => {
       return;
     }
 
-    const triggerDate = new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      time.getHours(),
-      time.getMinutes(),
-    );
+    try {
+      const triggerDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        time.getHours(),
+        time.getMinutes(),
+      );
 
-    const dateStr = date.toISOString().split("T")[0];
-    const timeStr = time.toTimeString().substring(0, 5);
+      const dateStr = date.toISOString().split("T")[0];
+      const timeStr = time.toTimeString().substring(0, 5);
 
-    // Cancel old notification if any
-    if (reminder.notification_id) {
-      await cancelReminderNotification(reminder.notification_id);
-    }
+      // Cancel old notification if any
+      if (reminder.notification_id) {
+        await cancelReminderNotification(reminder.notification_id);
+      }
 
-    let notificationId = null;
-    // Only schedule if reminder is active
-    if (reminder.is_completed === 0) {
-      notificationId = await scheduleReminderNotification(
+      let notificationId: string | undefined = reminder.notification_id;
+
+      // Only schedule new notification if reminder is active
+      if (reminder.is_completed === 0) {
+        const scheduledId = await scheduleReminderNotification(
+          reminder.id,
+          title,
+          description || "Saatnya membuka pengingat!",
+          triggerDate,
+        );
+        // Update notificationId jika scheduling berhasil, otherwise keep yang lama
+        if (scheduledId) {
+          notificationId = scheduledId;
+        } else {
+          // Jika scheduling gagal (e.g., Expo Go SDK 53), tetap gunakan old ID atau undefined
+          notificationId = undefined;
+        }
+      } else {
+        // Jika reminder completed, clear notification ID
+        notificationId = undefined;
+      }
+
+      // Always update the reminder, regardless of notification success
+      const success = await updateReminder(
         reminder.id,
         title,
-        description || "Saatnya membuka pengingat!",
-        triggerDate,
+        description,
+        dateStr,
+        timeStr,
+        notificationId,
       );
-    }
 
-    const success = await updateReminder(
-      reminder.id,
-      title,
-      description,
-      dateStr,
-      timeStr,
-      notificationId || undefined,
-    );
-
-    if (success) {
-      navigation.goBack();
-    } else {
-      Alert.alert("Error", "Gagal memperbarui pengingat.");
+      if (success) {
+        Alert.alert("Sukses", "Pengingat berhasil diperbarui.");
+        navigation.goBack();
+      } else {
+        Alert.alert("Error", "Gagal memperbarui pengingat.");
+      }
+    } catch (error) {
+      console.error("Error in onUpdate:", error);
+      Alert.alert(
+        "Error",
+        "Terjadi kesalahan saat memperbarui pengingat: " +
+          (error instanceof Error ? error.message : "Unknown error"),
+      );
     }
   };
 
@@ -169,7 +200,9 @@ export const DetailPengingatScreen = ({ route, navigation }: any) => {
             </View>
 
             <View style={styles.row}>
-              <View style={[styles.inputContainer, { flex: 1, marginRight: 8 }]}>
+              <View
+                style={[styles.inputContainer, { flex: 1, marginRight: 8 }]}
+              >
                 <Text style={styles.label}>Tanggal</Text>
                 <TouchableOpacity
                   style={styles.pickerBox}

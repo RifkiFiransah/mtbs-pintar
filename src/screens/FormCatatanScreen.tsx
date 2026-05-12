@@ -1,6 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import {
+  Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -12,20 +16,45 @@ import {
 } from "react-native";
 import { BackgroundWrapper } from "../components/BackgroundWrapper";
 import { CustomHeader } from "../components/CustomHeader";
+import {
+  addCatatan,
+  deleteCatatan,
+  getCatatanById,
+  updateCatatan,
+} from "../database/db";
 
 export const FormCatatanScreen = ({ route, navigation }: any) => {
   const isEdit = route.params?.isEdit || false;
   const isDetail = route.params?.isDetail || false;
+  const catatanId = route.params?.id || null;
+
+  // Tanggal dan Waktu Pemeriksaan
+  const [tanggalPemeriksaan, setTanggalPemeriksaan] = useState(
+    new Date().toISOString().split("T")[0],
+  );
+  const [jamPemeriksaan, setJamPemeriksaan] = useState(
+    new Date().toTimeString().substring(0, 5),
+  );
 
   const [suhuTubuh, setSuhuTubuh] = useState("36,7");
   const [nafsuMakan, setNafsuMakan] = useState("Baik");
   const [kondisiAnak, setKondisiAnak] = useState("Aktif");
   const [napasAnak, setNapasAnak] = useState("Normal");
+  const [penangananLainnya, setPenangananLainnya] = useState("");
+  const [catatanTambahan, setCatatanTambahan] = useState("");
+  const [fotoUri, setFotoUri] = useState<string | null>(null);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [statusKondisi, setStatusKondisi] = useState("Normal");
+
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [tempDate, setTempDate] = useState(new Date());
 
   const [keluhanUtama, setKeluhanUtama] = useState({
-    Batuk: true,
-    Pilek: true,
-    Demam: true,
+    Batuk: false,
+    Pilek: false,
+    Demam: false,
     Muntah: false,
     Rewel: false,
     Lemes: false,
@@ -41,13 +70,208 @@ export const FormCatatanScreen = ({ route, navigation }: any) => {
   });
 
   const [penanganan, setPenanganan] = useState({
-    "Kompres hangat": true,
-    "Diberi obat": true,
-    "Diberi ASI / cairan": true,
+    "Kompres hangat": false,
+    "Diberi obat": false,
+    "Diberi ASI / cairan": false,
     "Istirahat yang cukup": false,
     "Dibawa ke puskesmas / dokter": false,
     Lainnya: false,
   });
+
+  // Load data jika edit
+  React.useEffect(() => {
+    if ((isEdit || isDetail) && catatanId) {
+      loadCatatanData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadCatatanData = async () => {
+    if (!catatanId) return;
+    try {
+      const data = await getCatatanById(catatanId);
+      if (data) {
+        setTanggalPemeriksaan(data.tanggal_pemeriksaan);
+        setJamPemeriksaan(data.jam_pemeriksaan || "");
+        setSuhuTubuh(data.suhu_tubuh?.toString() || "36,7");
+        setNafsuMakan(data.nafsu_makan || "Baik");
+        setKondisiAnak(data.kondisi_anak || "Aktif");
+        setNapasAnak(data.napas_anak || "Normal");
+        setPenangananLainnya(data.penanganan_lainnya || "");
+        setCatatanTambahan(data.catatan_tambahan || "");
+        setFotoUri(data.foto_uri || null);
+        setStatusKondisi(data.status_kondisi || "Normal");
+
+        if (data.keluhan_utama) {
+          try {
+            setKeluhanUtama(JSON.parse(data.keluhan_utama));
+          } catch (e) {
+            console.log("Error parsing keluhan_utama", e);
+          }
+        }
+        if (data.tanda_bahaya) {
+          try {
+            setTandaBahaya(JSON.parse(data.tanda_bahaya));
+          } catch (e) {
+            console.log("Error parsing tanda_bahaya", e);
+          }
+        }
+        if (data.penanganan) {
+          try {
+            setPenanganan(JSON.parse(data.penanganan));
+          } catch (e) {
+            console.log("Error parsing penanganan", e);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error loading catatan:", error);
+    }
+  };
+
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === "android") {
+      setShowDatePicker(false);
+    }
+    if (selectedDate) {
+      setTempDate(selectedDate);
+      const dateStr = selectedDate.toISOString().split("T")[0];
+      setTanggalPemeriksaan(dateStr);
+    }
+  };
+
+  const handleTimeChange = (event: any, selectedTime?: Date) => {
+    if (Platform.OS === "android") {
+      setShowTimePicker(false);
+    }
+    if (selectedTime) {
+      setTempDate(selectedTime);
+      const timeStr = selectedTime.toTimeString().substring(0, 5);
+      setJamPemeriksaan(timeStr);
+    }
+  };
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setFotoUri(result.assets[0].uri);
+    }
+  };
+
+  const determineStatus = () => {
+    const hasDangerSign = Object.values(tandaBahaya).some((v) => v === true);
+    if (hasDangerSign) return "Bahaya";
+
+    const needsAttention =
+      Object.values(keluhanUtama).some((v) => v === true) ||
+      nafsuMakan === "Berkurang" ||
+      napasAnak !== "Normal";
+    if (needsAttention) return "Perlu Perhatian";
+
+    return "Normal";
+  };
+
+  const onSave = async () => {
+    // Validate required fields
+    if (!tanggalPemeriksaan || !jamPemeriksaan) {
+      Alert.alert("Error", "Tanggal dan waktu pemeriksaan harus diisi!");
+      return;
+    }
+
+    try {
+      const status = determineStatus();
+      const keluhanStr = JSON.stringify(keluhanUtama);
+      const bahayaStr = JSON.stringify(tandaBahaya);
+      let penangananStr = JSON.stringify(penanganan);
+
+      // Convert suhu from string "36,7" to number
+      const suhuNum = parseFloat(suhuTubuh.replace(",", "."));
+
+      if (isEdit && catatanId) {
+        // Update
+        const success = await updateCatatan(
+          catatanId,
+          tanggalPemeriksaan,
+          jamPemeriksaan,
+          suhuNum || undefined,
+          nafsuMakan,
+          kondisiAnak,
+          napasAnak,
+          keluhanStr,
+          bahayaStr,
+          penangananStr,
+          penangananLainnya,
+          catatanTambahan,
+          fotoUri || undefined,
+          status,
+        );
+
+        if (success) {
+          Alert.alert("Sukses", "Catatan berhasil diperbarui.");
+          navigation.goBack();
+        } else {
+          Alert.alert("Error", "Gagal memperbarui catatan.");
+        }
+      } else {
+        // Add new
+        const id = await addCatatan(
+          tanggalPemeriksaan,
+          jamPemeriksaan,
+          suhuNum || undefined,
+          nafsuMakan,
+          kondisiAnak,
+          napasAnak,
+          keluhanStr,
+          bahayaStr,
+          penangananStr,
+          penangananLainnya,
+          catatanTambahan,
+          fotoUri || undefined,
+          status,
+        );
+
+        if (id) {
+          Alert.alert("Sukses", "Catatan berhasil disimpan.");
+          navigation.goBack();
+        } else {
+          Alert.alert("Error", "Gagal menyimpan catatan.");
+        }
+      }
+    } catch (error) {
+      console.error("Error saving catatan:", error);
+      Alert.alert("Error", "Terjadi kesalahan saat menyimpan catatan.");
+    }
+  };
+
+  const onDelete = () => {
+    if (!catatanId) return;
+
+    Alert.alert(
+      "Hapus Catatan",
+      "Apakah Anda yakin ingin menghapus catatan ini?",
+      [
+        { text: "Batal", style: "cancel" },
+        {
+          text: "Hapus",
+          style: "destructive",
+          onPress: async () => {
+            const success = await deleteCatatan(catatanId);
+            if (success) {
+              Alert.alert("Sukses", "Catatan berhasil dihapus.");
+              navigation.goBack();
+            } else {
+              Alert.alert("Error", "Gagal menghapus catatan.");
+            }
+          },
+        },
+      ],
+    );
+  };
 
   const RadioButton = ({
     selected,
@@ -152,40 +376,44 @@ export const FormCatatanScreen = ({ route, navigation }: any) => {
                   <Ionicons name="calendar-outline" size={18} color="#666" />
                   <Text style={styles.inputLabel}>Tanggal Pemeriksaan</Text>
                 </View>
-                <View style={styles.pickerBox}>
-                  <Text style={styles.pickerText}>25 Mei 2024</Text>
+                <TouchableOpacity
+                  style={styles.pickerBox}
+                  onPress={() => setShowDatePicker(true)}
+                >
+                  <Text style={styles.pickerText}>
+                    {new Date(tanggalPemeriksaan).toLocaleDateString("id-ID")}
+                  </Text>
                   <Ionicons name="chevron-down" size={16} color="#666" />
-                </View>
+                </TouchableOpacity>
+                {showDatePicker && (
+                  <DateTimePicker
+                    value={tempDate}
+                    mode="date"
+                    display="default"
+                    onChange={handleDateChange}
+                  />
+                )}
               </View>
               <View style={styles.inputRow}>
                 <View style={styles.inputLabelRow}>
                   <Ionicons name="time-outline" size={18} color="#666" />
                   <Text style={styles.inputLabel}>Jam Pemeriksaan</Text>
                 </View>
-                <View style={styles.pickerBox}>
-                  <Text style={styles.pickerText}>09:30</Text>
+                <TouchableOpacity
+                  style={styles.pickerBox}
+                  onPress={() => setShowTimePicker(true)}
+                >
+                  <Text style={styles.pickerText}>{jamPemeriksaan}</Text>
                   <Ionicons name="chevron-down" size={16} color="#666" />
-                </View>
-              </View>
-              <View style={styles.inputRow}>
-                <View style={styles.inputLabelRow}>
-                  <Ionicons name="person-outline" size={18} color="#666" />
-                  <Text style={styles.inputLabel}>Nama Anak</Text>
-                </View>
-                <View style={styles.pickerBox}>
-                  <Text style={styles.pickerText}>Aisyah</Text>
-                  <Ionicons name="chevron-down" size={16} color="#666" />
-                </View>
-              </View>
-              <View style={styles.inputRow}>
-                <View style={styles.inputLabelRow}>
-                  <Ionicons name="happy-outline" size={18} color="#666" />
-                  <Text style={styles.inputLabel}>Umur Anak</Text>
-                </View>
-                <View style={styles.pickerBox}>
-                  <Text style={styles.pickerText}>2 Tahun 3 Bulan</Text>
-                  <Ionicons name="chevron-down" size={16} color="#666" />
-                </View>
+                </TouchableOpacity>
+                {showTimePicker && (
+                  <DateTimePicker
+                    value={tempDate}
+                    mode="time"
+                    display="default"
+                    onChange={handleTimeChange}
+                  />
+                )}
               </View>
             </View>
           </View>
@@ -431,10 +659,11 @@ export const FormCatatanScreen = ({ route, navigation }: any) => {
                 multiline
                 numberOfLines={4}
                 placeholder="Ketik catatan..."
-                value="Anak tidur lebih sering hari ini.\nNafsu makan menurun sejak pagi.\nSudah minum obat sesuai anjuran."
+                value={catatanTambahan}
+                onChangeText={setCatatanTambahan}
                 textAlignVertical="top"
               />
-              <Text style={styles.charCount}>100/200</Text>
+              <Text style={styles.charCount}>{catatanTambahan.length}/200</Text>
             </View>
           </View>
 
@@ -451,35 +680,52 @@ export const FormCatatanScreen = ({ route, navigation }: any) => {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.addPhotoButton}>
+            {fotoUri ? (
+              <View style={styles.photoPreviewContainer}>
+                <Image source={{ uri: fotoUri }} style={styles.photoPreview} />
+                <TouchableOpacity
+                  style={styles.removePhotoButton}
+                  onPress={() => setFotoUri(null)}
+                >
+                  <Ionicons name="close-circle" size={32} color="#FF5252" />
+                </TouchableOpacity>
+              </View>
+            ) : null}
+            <TouchableOpacity style={styles.addPhotoButton} onPress={pickImage}>
               <Ionicons name="camera-outline" size={20} color="#1E88E5" />
-              <Text style={styles.addPhotoText}>Tambah Foto</Text>
+              <Text style={styles.addPhotoText}>
+                {fotoUri ? "Ubah Foto" : "Tambah Foto"}
+              </Text>
             </TouchableOpacity>
           </View>
 
           {/* Action Buttons */}
           {isDetail ? (
             <View style={styles.buttonActionRow}>
-              <TouchableOpacity style={styles.btnHapus}>
-                <Ionicons name="trash-outline" size={18} color="#333" />
+              <TouchableOpacity style={styles.btnHapus} onPress={onDelete}>
+                <Ionicons name="trash-outline" size={18} color="#FF5252" />
                 <Text style={styles.btnHapusText}>Hapus</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnEdit}>
-                <Ionicons name="pencil-outline" size={18} color="#333" />
-                <Text style={styles.btnEditText}>Edit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.btnSimpan}>
-                <Ionicons name="save-outline" size={18} color="#FFF" />
-                <Text style={styles.btnSimpanText}>Simpan Catatan</Text>
+              <TouchableOpacity
+                style={styles.btnSimpan}
+                onPress={() =>
+                  navigation.setParams({ isDetail: false, isEdit: true })
+                }
+              >
+                <Ionicons name="pencil-outline" size={18} color="#FFF" />
+                <Text style={styles.btnSimpanText}>Edit</Text>
               </TouchableOpacity>
             </View>
           ) : (
             <View style={styles.buttonActionRow}>
               <TouchableOpacity
                 style={[styles.btnSimpan, { flex: 1 }]}
-                onPress={() => navigation.goBack()}
+                onPress={onSave}
               >
-                <Text style={styles.btnSimpanText}>Simpan Catatan</Text>
+                <Ionicons name="save-outline" size={18} color="#FFF" />
+                <Text style={styles.btnSimpanText}>
+                  {isEdit ? "Update Catatan" : "Simpan Catatan"}
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -796,48 +1042,110 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "#E0E0E0",
+    borderColor: "#FF5252",
     borderRadius: 8,
     paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: "#FFEBEE",
     flex: 1,
     gap: 6,
-    backgroundColor: "#FFF",
   },
   btnHapusText: {
+    color: "#FF5252",
     fontSize: 14,
     fontWeight: "600",
-    color: "#333",
   },
   btnEdit: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "#E0E0E0",
+    borderColor: "#FF9800",
     borderRadius: 8,
     paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: "#FFF3E0",
     flex: 1,
     gap: 6,
-    backgroundColor: "#FFF",
   },
   btnEditText: {
+    color: "#FF9800",
     fontSize: 14,
     fontWeight: "600",
-    color: "#333",
   },
   btnSimpan: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#1E88E5",
     borderRadius: 8,
     paddingVertical: 12,
-    flex: 2,
+    paddingHorizontal: 16,
+    flex: 1,
     gap: 6,
-    backgroundColor: "#1E88E5",
   },
   btnSimpanText: {
+    color: "#FFF",
     fontSize: 14,
     fontWeight: "600",
-    color: "#FFF",
   },
+  photoPreviewContainer: {
+    position: "relative",
+    marginBottom: 12,
+    borderRadius: 8,
+    overflow: "hidden",
+  },
+  photoPreview: {
+    width: "100%",
+    height: 200,
+    borderRadius: 8,
+  },
+  removePhotoButton: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+  },
+  // btnHapus: {
+  //   paddingVertical: 12,
+  //   flex: 1,
+  //   gap: 6,
+  //   backgroundColor: "#FFF",
+  // },
+  // btnHapusText: {
+  //   fontSize: 14,
+  //   fontWeight: "600",
+  //   color: "#333",
+  // },
+  // btnEdit: {
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   borderWidth: 1,
+  //   borderColor: "#E0E0E0",
+  //   borderRadius: 8,
+  //   paddingVertical: 12,
+  //   flex: 1,
+  //   gap: 6,
+  //   backgroundColor: "#FFF",
+  // },
+  // btnEditText: {
+  //   fontSize: 14,
+  //   fontWeight: "600",
+  //   color: "#333",
+  // },
+  // btnSimpan: {
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   borderRadius: 8,
+  //   paddingVertical: 12,
+  //   flex: 2,
+  //   gap: 6,
+  //   backgroundColor: "#1E88E5",
+  // },
+  // btnSimpanText: {
+  //   fontSize: 14,
+  //   fontWeight: "600",
+  //   color: "#FFF",
+  // },
 });
