@@ -6,12 +6,14 @@ import React from "react";
 
 // Import Screens
 import { AboutMTBSScreen } from "../screens/AboutMTBSScreen";
+import { BantuanScreen } from "../screens/BantuanScreen";
 import { BerandaScreen } from "../screens/BerandaScreen";
 import { CatatanScreen } from "../screens/CatatanScreen";
 import { CekKondisiScreen } from "../screens/CekKondisiScreen";
 import { DetailPengingatScreen } from "../screens/DetailPengingatScreen";
 import { FormCatatanScreen } from "../screens/FormCatatanScreen";
 import { FormPengingatScreen } from "../screens/FormPengingatScreen";
+import { KebijakanPrivasiScreen } from "../screens/KebijakanPrivasiScreen";
 import { PengingatScreen } from "../screens/PengingatScreen";
 import { PerawatanDiRumahScreen } from "../screens/PerawatanDiRumahScreen";
 import { ProfilScreen } from "../screens/ProfilScreen";
@@ -25,6 +27,7 @@ import {
 } from "../screens/tanda-bahaya";
 import { TandaBahayaScreen } from "../screens/TandaBahayaScreen";
 import { TanyaJawabScreen } from "../screens/TanyaJawabScreen";
+import { TentangAplikasiScreen } from "../screens/TentangAplikasiScreen";
 import { TindakanScreen } from "../screens/TindakanScreen";
 import { WelcomeScreen } from "../screens/WelcomeScreen";
 
@@ -130,6 +133,23 @@ export default function AppNavigator() {
           options={{
             headerShown: false,
           }}
+        />
+
+        {/* Profil Menu Screens */}
+        <Stack.Screen
+          name="TentangAplikasi"
+          component={TentangAplikasiScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Bantuan"
+          component={BantuanScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="KebijakanPrivasi"
+          component={KebijakanPrivasiScreen}
+          options={{ headerShown: false }}
         />
 
         {/* Detail Screens (Stack screens that overlay the tabs) */}

@@ -75,7 +75,13 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
   const handleSave = async () => {
     try {
       if (motherData) {
-        await updateMother(motherData.id, motherName, motherAge, motherPhone, motherFotoUri || undefined);
+        await updateMother(
+          motherData.id,
+          motherName,
+          motherAge,
+          motherPhone,
+          motherFotoUri || undefined,
+        );
       }
       if (childData) {
         await updateChild(
@@ -84,7 +90,7 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
           childAge,
           childGender,
           childData.blood_type,
-          childFotoUri || undefined
+          childFotoUri || undefined,
         );
       }
       setModalVisible(false);
@@ -114,7 +120,7 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
 
   const pickMotherImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ["images"],
       allowsEditing: true,
       quality: 0.8,
     });
@@ -126,7 +132,7 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
 
   const pickChildImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ["images"],
       allowsEditing: true,
       quality: 0.8,
     });
@@ -157,7 +163,10 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
         <View style={[styles.card, styles.profileCard]}>
           <View style={styles.avatarContainer}>
             {motherData?.foto_uri ? (
-              <Image source={{ uri: motherData.foto_uri }} style={styles.avatarImage} />
+              <Image
+                source={{ uri: motherData.foto_uri }}
+                style={styles.avatarImage}
+              />
             ) : (
               <Ionicons name="person" size={40} color="#8C9EFF" />
             )}
@@ -184,7 +193,10 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
             style={[styles.avatarContainer, { backgroundColor: "#B3E5FC" }]}
           >
             {childData?.foto_uri ? (
-              <Image source={{ uri: childData.foto_uri }} style={styles.avatarImage} />
+              <Image
+                source={{ uri: childData.foto_uri }}
+                style={styles.avatarImage}
+              />
             ) : (
               <Ionicons name="happy" size={40} color="#4FC3F7" />
             )}
@@ -210,7 +222,7 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
         <View style={styles.menuContainer}>
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => navigation.navigate("AboutMTBS")}
+            onPress={() => navigation.navigate("TentangAplikasi")}
           >
             <View style={styles.menuItemLeft}>
               <Ionicons
@@ -226,12 +238,7 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
 
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() =>
-              Alert.alert(
-                "Bantuan",
-                "Silakan hubungi fasilitas kesehatan terdekat jika balita Anda mengalami keadaan darurat medis.",
-              )
-            }
+            onPress={() => navigation.navigate("Bantuan")}
           >
             <View style={styles.menuItemLeft}>
               <Ionicons
@@ -247,12 +254,7 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
 
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() =>
-              Alert.alert(
-                "Kebijakan Privasi",
-                "Semua data profil dan rekam medis disimpan secara aman di perangkat lokal Anda.",
-              )
-            }
+            onPress={() => navigation.navigate("KebijakanPrivasi")}
           >
             <View style={styles.menuItemLeft}>
               <Ionicons
@@ -300,15 +302,23 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
             <ScrollView style={styles.modalScroll}>
               <Text style={styles.formSectionTitle}>Data Ibu</Text>
               <View style={styles.imagePickerContainer}>
-                <TouchableOpacity onPress={pickMotherImage} style={styles.imagePickerAvatar}>
+                <TouchableOpacity
+                  onPress={pickMotherImage}
+                  style={styles.imagePickerAvatar}
+                >
                   {motherFotoUri ? (
-                    <Image source={{ uri: motherFotoUri }} style={styles.avatarImage} />
+                    <Image
+                      source={{ uri: motherFotoUri }}
+                      style={styles.avatarImage}
+                    />
                   ) : (
                     <Ionicons name="person" size={40} color="#8C9EFF" />
                   )}
                 </TouchableOpacity>
                 <TouchableOpacity onPress={pickMotherImage}>
-                  <Text style={styles.changePhotoText}>Ubah Foto Ibu (Opsional)</Text>
+                  <Text style={styles.changePhotoText}>
+                    Ubah Foto Ibu (Opsional)
+                  </Text>
                 </TouchableOpacity>
               </View>
 
@@ -343,15 +353,26 @@ export const ProfilScreen = ({ navigation }: ProfilScreenProps) => {
 
               <Text style={styles.formSectionTitle}>Data Anak</Text>
               <View style={styles.imagePickerContainer}>
-                <TouchableOpacity onPress={pickChildImage} style={[styles.imagePickerAvatar, { backgroundColor: "#B3E5FC" }]}>
+                <TouchableOpacity
+                  onPress={pickChildImage}
+                  style={[
+                    styles.imagePickerAvatar,
+                    { backgroundColor: "#B3E5FC" },
+                  ]}
+                >
                   {childFotoUri ? (
-                    <Image source={{ uri: childFotoUri }} style={styles.avatarImage} />
+                    <Image
+                      source={{ uri: childFotoUri }}
+                      style={styles.avatarImage}
+                    />
                   ) : (
                     <Ionicons name="happy" size={40} color="#4FC3F7" />
                   )}
                 </TouchableOpacity>
                 <TouchableOpacity onPress={pickChildImage}>
-                  <Text style={styles.changePhotoText}>Ubah Foto Anak (Opsional)</Text>
+                  <Text style={styles.changePhotoText}>
+                    Ubah Foto Anak (Opsional)
+                  </Text>
                 </TouchableOpacity>
               </View>
 

@@ -36,8 +36,12 @@ export const CatatanScreen = ({ navigation }: CatatanScreenProps) => {
   }, [isFocused]);
 
   const fetchCatatan = async () => {
-    const data = await getCatatan();
-    setCatatanList(data);
+    try {
+      const data = await getCatatan();
+      setCatatanList(data);
+    } catch (error) {
+      console.error("Error fetching catatan:", error);
+    }
   };
 
   const handleDateChange = (event: any, date?: Date) => {

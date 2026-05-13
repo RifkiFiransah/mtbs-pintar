@@ -18,15 +18,16 @@ import { BackgroundWrapper } from "../components/BackgroundWrapper";
 import { CustomHeader } from "../components/CustomHeader";
 import {
   addCatatan,
+  CatatanRow,
   deleteCatatan,
   getCatatanById,
   updateCatatan,
 } from "../database/db";
 
 export const FormCatatanScreen = ({ route, navigation }: any) => {
-  const isEdit = route.params?.isEdit || false;
   const isDetail = route.params?.isDetail || false;
-  const catatanId = route.params?.id || null;
+  const catatanId = route.params?.catatanData?.id || route.params?.id || null;
+  const initialCatatanData = route.params?.catatanData || null;
 
   // Tanggal dan Waktu Pemeriksaan
   const [tanggalPemeriksaan, setTanggalPemeriksaan] = useState(
@@ -78,51 +79,62 @@ export const FormCatatanScreen = ({ route, navigation }: any) => {
     Lainnya: false,
   });
 
-  // Load data jika edit
+  // Load data jika detail
   React.useEffect(() => {
-    if ((isEdit || isDetail) && catatanId) {
-      loadCatatanData();
+    if (isDetail && catatanId) {
+      // Gunakan data dari route params jika tersedia untuk menghindari query ulang
+      if (initialCatatanData) {
+        populateCatatanData(initialCatatanData);
+      } else {
+        loadCatatanData();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isDetail, catatanId]);
+
+  const populateCatatanData = (data: CatatanRow) => {
+    setTanggalPemeriksaan(data.tanggal_pemeriksaan);
+    setJamPemeriksaan(data.jam_pemeriksaan || "");
+    // Convert suhu_tubuh from database format (36.7) to input format (36,7)
+    const suhuStr = data.suhu_tubuh?.toString() || "36.7";
+    setSuhuTubuh(suhuStr.replace(".", ","));
+    setNafsuMakan(data.nafsu_makan || "Baik");
+    setKondisiAnak(data.kondisi_anak || "Aktif");
+    setNapasAnak(data.napas_anak || "Normal");
+    setPenangananLainnya(data.penanganan_lainnya || "");
+    setCatatanTambahan(data.catatan_tambahan || "");
+    setFotoUri(data.foto_uri || null);
+    setStatusKondisi(data.status_kondisi || "Normal");
+
+    if (data.keluhan_utama) {
+      try {
+        setKeluhanUtama(JSON.parse(data.keluhan_utama));
+      } catch (e) {
+        console.log("Error parsing keluhan_utama", e);
+      }
+    }
+    if (data.tanda_bahaya) {
+      try {
+        setTandaBahaya(JSON.parse(data.tanda_bahaya));
+      } catch (e) {
+        console.log("Error parsing tanda_bahaya", e);
+      }
+    }
+    if (data.penanganan) {
+      try {
+        setPenanganan(JSON.parse(data.penanganan));
+      } catch (e) {
+        console.log("Error parsing penanganan", e);
+      }
+    }
+  };
 
   const loadCatatanData = async () => {
     if (!catatanId) return;
     try {
       const data = await getCatatanById(catatanId);
       if (data) {
-        setTanggalPemeriksaan(data.tanggal_pemeriksaan);
-        setJamPemeriksaan(data.jam_pemeriksaan || "");
-        setSuhuTubuh(data.suhu_tubuh?.toString() || "36,7");
-        setNafsuMakan(data.nafsu_makan || "Baik");
-        setKondisiAnak(data.kondisi_anak || "Aktif");
-        setNapasAnak(data.napas_anak || "Normal");
-        setPenangananLainnya(data.penanganan_lainnya || "");
-        setCatatanTambahan(data.catatan_tambahan || "");
-        setFotoUri(data.foto_uri || null);
-        setStatusKondisi(data.status_kondisi || "Normal");
-
-        if (data.keluhan_utama) {
-          try {
-            setKeluhanUtama(JSON.parse(data.keluhan_utama));
-          } catch (e) {
-            console.log("Error parsing keluhan_utama", e);
-          }
-        }
-        if (data.tanda_bahaya) {
-          try {
-            setTandaBahaya(JSON.parse(data.tanda_bahaya));
-          } catch (e) {
-            console.log("Error parsing tanda_bahaya", e);
-          }
-        }
-        if (data.penanganan) {
-          try {
-            setPenanganan(JSON.parse(data.penanganan));
-          } catch (e) {
-            console.log("Error parsing penanganan", e);
-          }
-        }
+        populateCatatanData(data);
       }
     } catch (error) {
       console.error("Error loading catatan:", error);
@@ -192,7 +204,7 @@ export const FormCatatanScreen = ({ route, navigation }: any) => {
       // Convert suhu from string "36,7" to number
       const suhuNum = parseFloat(suhuTubuh.replace(",", "."));
 
-      if (isEdit && catatanId) {
+      if (isDetail && catatanId) {
         // Update
         const success = await updateCatatan(
           catatanId,
@@ -329,11 +341,6 @@ export const FormCatatanScreen = ({ route, navigation }: any) => {
         title="Catatan"
         showBack={true}
         onBackPress={() => navigation.goBack()}
-        rightAction={
-          isDetail || isEdit
-            ? undefined
-            : { icon: "event-note", onPress: () => {} }
-        }
       />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -343,7 +350,7 @@ export const FormCatatanScreen = ({ route, navigation }: any) => {
           style={styles.container}
           contentContainerStyle={styles.scrollContent}
         >
-          {!isDetail && !isEdit && (
+          {!isDetail && (
             <View style={styles.banner}>
               <View style={styles.bannerIconBox}>
                 <Ionicons name="clipboard-outline" size={32} color="#1E88E5" />
@@ -441,6 +448,7 @@ export const FormCatatanScreen = ({ route, navigation }: any) => {
                   value={suhuTubuh}
                   onChangeText={setSuhuTubuh}
                   keyboardType="numeric"
+                  placeholderTextColor="#999"
                 />
                 <View style={styles.inputSuffix}>
                   <Text style={styles.suffixText}>°C</Text>
@@ -626,6 +634,8 @@ export const FormCatatanScreen = ({ route, navigation }: any) => {
                     <TextInput
                       style={styles.lainnyaInput}
                       placeholder="Tulis penanganan lainnya..."
+                      value={penangananLainnya}
+                      onChangeText={setPenangananLainnya}
                     />
                   )}
                   {index < Object.keys(penanganan).length - 1 && (
@@ -700,20 +710,18 @@ export const FormCatatanScreen = ({ route, navigation }: any) => {
           </View>
 
           {/* Action Buttons */}
-          {isDetail ? (
+          {isDetail && catatanId ? (
             <View style={styles.buttonActionRow}>
               <TouchableOpacity style={styles.btnHapus} onPress={onDelete}>
                 <Ionicons name="trash-outline" size={18} color="#FF5252" />
                 <Text style={styles.btnHapusText}>Hapus</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.btnSimpan}
-                onPress={() =>
-                  navigation.setParams({ isDetail: false, isEdit: true })
-                }
+                style={[styles.btnSimpan, { flex: 1 }]}
+                onPress={onSave}
               >
-                <Ionicons name="pencil-outline" size={18} color="#FFF" />
-                <Text style={styles.btnSimpanText}>Edit</Text>
+                <Ionicons name="save-outline" size={18} color="#FFF" />
+                <Text style={styles.btnSimpanText}>Update Catatan</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -723,9 +731,7 @@ export const FormCatatanScreen = ({ route, navigation }: any) => {
                 onPress={onSave}
               >
                 <Ionicons name="save-outline" size={18} color="#FFF" />
-                <Text style={styles.btnSimpanText}>
-                  {isEdit ? "Update Catatan" : "Simpan Catatan"}
-                </Text>
+                <Text style={styles.btnSimpanText}>Simpan Catatan</Text>
               </TouchableOpacity>
             </View>
           )}
